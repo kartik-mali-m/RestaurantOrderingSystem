@@ -1,0 +1,643 @@
+﻿@model RestaurantOrderingSystem.Areas.Restaurant.ViewModels.ProfileVM
+
+@{
+    ViewData["Title"] = "Restaurant Profile";
+}
+
+<link rel="stylesheet"
+      href="~/css/restaurant-profile.css"
+      asp-append-version="true" />
+
+<div class="restaurant-profile-page">
+
+    <!-- PAGE HEADER -->
+    <div class="profile-page-header">
+
+        <div>
+            <div class="profile-breadcrumb">
+                Restaurant / Profile
+            </div>
+
+            <h1>Restaurant Profile</h1>
+
+            <p>
+                Manage your restaurant information and branding.
+            </p>
+        </div>
+
+        <div class="profile-status">
+            <span class="status-dot"></span>
+            @Model.Status
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS MESSAGE -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="profile-success-message">
+            <div class="success-icon">
+                ✓
+            </div>
+
+            <div>
+                <strong>Success</strong>
+                <span>@TempData["SuccessMessage"]</span>
+            </div>
+        </div>
+    }
+
+
+    <!-- VALIDATION MESSAGE -->
+    <div asp-validation-summary="ModelOnly"
+         class="profile-validation">
+    </div>
+
+
+    <div class="profile-grid">
+
+        <!-- ================================================= -->
+        <!-- LEFT : RESTAURANT BRANDING -->
+        <!-- ================================================= -->
+
+        <div class="profile-brand-card">
+
+            <div class="brand-card-header">
+                <span>Restaurant Branding</span>
+            </div>
+
+
+            <div class="brand-card-body">
+
+                <!-- LOGO -->
+                <div class="restaurant-logo-wrapper">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Logo))
+                    {
+                        <img src="@Model.Logo"
+                             alt="Restaurant Logo"
+                             class="restaurant-logo" />
+                    }
+                    else
+                    {
+                        <div class="restaurant-logo-placeholder">
+
+                            <span>
+                                @(string.IsNullOrWhiteSpace(Model.Name)
+                                                            ? "R"
+                                                            : Model.Name.Substring(0, 1).ToUpper())
+                        </span>
+
+                        </div>
+                                        }
+
+                    <button type="button"
+                            class="logo-edit-button"
+                            data-bs-toggle="modal"
+                            data-bs-target="#logoModal">
+
+                        ✎
+
+                    </button>
+
+                </div>
+
+
+                <h2 class="restaurant-name">
+                    @Model.Name
+                </h2>
+
+                <p class="restaurant-email">
+                    @Model.Email
+                </p>
+
+
+                <div class="restaurant-status-badge">
+                    <span class="status-dot"></span>
+                    @Model.Status
+                </div>
+
+
+                <div class="brand-divider"></div>
+
+
+                <button type="button"
+                        class="upload-logo-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#logoModal">
+
+                    <span class="upload-icon">
+                        ↑
+                    </span>
+
+                    <span>
+                        @(string.IsNullOrWhiteSpace(Model.Logo)
+                                                ? "Upload Logo"
+                                                : "Change Logo")
+                    </span>
+
+                </button>
+
+
+                <p class="logo-help-text">
+                    JPG, JPEG, PNG or WEBP
+                    <br />
+                    Maximum file size: 2 MB
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================================= -->
+        <!-- RIGHT : RESTAURANT INFORMATION -->
+        <!-- ================================================= -->
+
+        <div class="profile-information-card">
+
+            <div class="information-card-header">
+
+                <div>
+                    <h2>Restaurant Information</h2>
+
+                    <p>
+                        Update the information associated with your restaurant.
+                    </p>
+                </div>
+
+                <div class="information-icon">
+                    ☰
+                </div>
+
+            </div>
+
+
+            <div class="information-card-body">
+
+                <form id="profileForm"
+                      asp-area="Restaurant"
+                      asp-controller="Profile"
+                      asp-action="Index"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    @Html.AntiForgeryToken()
+
+
+                    <!-- RESTAURANT NAME -->
+                    <div class="form-group">
+
+                        <label asp-for="Name">
+                            Restaurant Name
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ◉
+                            </span>
+
+                            <input asp-for="Name"
+                                   class="profile-input"
+                                   placeholder="Restaurant name" />
+
+                        </div>
+
+                        <span asp-validation-for="Name"
+                              class="field-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+                    <div class="form-group">
+
+                        <label>
+                            Restaurant Email
+                            <span class="locked-label">
+                                Locked
+                            </span>
+                        </label>
+
+                        <div class="input-wrapper readonly-wrapper">
+
+                            <span class="input-icon">
+                                ✉
+                            </span>
+
+                            <input type="text"
+                                   class="profile-input"
+                                   value="@Model.Email"
+                                   readonly />
+
+                            <span class="lock-icon">
+                                🔒
+                            </span>
+
+                        </div>
+
+                        <small class="field-help">
+                            Restaurant email cannot be changed.
+                        </small>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+                    <div class="form-group">
+
+                        <label asp-for="Phone">
+                            Phone Number
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <span class="input-icon">
+                                ☎
+                            </span>
+
+                            <input asp-for="Phone"
+                                   class="profile-input"
+                                   placeholder="Phone number" />
+
+                        </div>
+
+                        <span asp-validation-for="Phone"
+                              class="field-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+                    <div class="form-group">
+
+                        <label asp-for="Address">
+                            Restaurant Address
+                        </label>
+
+                        <div class="input-wrapper textarea-wrapper">
+
+                            <span class="input-icon address-icon">
+                                ⌖
+                            </span>
+
+                            <textarea asp-for="Address"
+                                      class="profile-input profile-textarea"
+                                      placeholder="Restaurant address"></textarea>
+
+                        </div>
+
+                        <span asp-validation-for="Address"
+                              class="field-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- GST -->
+                    <div class="form-group">
+
+                        <label>
+                            GST Number
+                            <span class="locked-label">
+                                Locked
+                            </span>
+                        </label>
+
+                        <div class="input-wrapper readonly-wrapper">
+
+                            <span class="input-icon">
+                                #
+                            </span>
+
+                            <input type="text"
+                                   class="profile-input"
+                                   value="@Model.GSTNumber"
+                                   placeholder="Not provided"
+                                   readonly />
+
+                            <span class="lock-icon">
+                                🔒
+                            </span>
+
+                        </div>
+
+                        <small class="field-help">
+                            GST number cannot be changed from the profile.
+                        </small>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+                    <div class="form-group">
+
+                        <label>
+                            Restaurant Status
+                        </label>
+
+                        <div class="status-field">
+
+                            <span class="status-dot"></span>
+
+                            <span>
+                                @Model.Status
+                            </span>
+
+                            <span class="status-info">
+                                Controlled by Super Admin
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                 
+
+
+                    <!-- FORM ACTIONS -->
+                    <div class="profile-form-footer">
+
+                        <a asp-area="Restaurant"
+                           asp-controller="Dashboard"
+                           asp-action="Index"
+                           class="cancel-button">
+
+                            Cancel
+
+                        </a>
+
+                        <button type="submit"
+                                class="save-profile-button">
+
+                            <span>✓</span>
+
+                            Save Changes
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================================================= -->
+<!-- LOGO UPLOAD MODAL -->
+<!-- ========================================================= -->
+
+<div class="modal fade"
+     id="logoModal"
+     tabindex="-1"
+     aria-labelledby="logoModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content logo-modal">
+
+            <div class="modal-header logo-modal-header">
+
+                <div>
+                    <h5 id="logoModalLabel">
+                        Restaurant Logo
+                    </h5>
+
+                    <p>
+                        Upload a new logo for your restaurant.
+                    </p>
+                </div>
+
+                <button type="button"
+                        class="modal-close-button"
+                        data-bs-dismiss="modal"
+                        aria-label="Close">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <div class="modal-body logo-modal-body">
+
+                <!-- PREVIEW -->
+                <div class="logo-preview-box">
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Logo))
+                    {
+                        <img id="logoPreview"
+                             src="@Model.Logo"
+                             alt="Logo Preview" />
+                    }
+                    else
+                    {
+                        <div id="logoPreviewPlaceholder">
+                            <span>
+                                @(string.IsNullOrWhiteSpace(Model.Name)
+                                                            ? "R"
+                                                            : Model.Name.Substring(0, 1).ToUpper())
+                        </span>
+                    </div>
+
+                        <img id="logoPreview"
+                             src=""
+                             alt="Logo Preview"
+                             style="display:none;" />
+                                        }
+
+                </div>
+
+
+                <!-- FILE PICKER -->
+                <label class="file-upload-area"
+                       for="logoPicker">
+
+                    <div class="file-upload-icon">
+                        ↑
+                    </div>
+
+                    <strong>
+                        Choose an image
+                    </strong>
+
+                    <span>
+                        Click here to select your restaurant logo
+                    </span>
+
+                </label>
+
+                <input asp-for="LogoFile"
+                       type="file"
+                       id="logoPicker"
+                       class="actual-file-input"
+                       accept=".jpg,.jpeg,.png,.webp"
+                       form="profileForm" />
+
+
+                <div class="upload-rules">
+
+                    <span>
+                        ✓ JPG / JPEG
+                    </span>
+
+                    <span>
+                        ✓ PNG
+                    </span>
+
+                    <span>
+                        ✓ WEBP
+                    </span>
+
+                    <span>
+                        ✓ Max 2 MB
+                    </span>
+
+                </div>
+
+
+                <div id="logoFileError"
+                     class="logo-file-error">
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer logo-modal-footer">
+
+                <button type="button"
+                        class="modal-cancel-button"
+                        data-bs-dismiss="modal">
+
+                    Cancel
+
+                </button>
+
+                <button type="button"
+                        class="modal-upload-button"
+                        onclick="submitLogo()">
+
+                    Upload Logo
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const logoPicker =
+            document.getElementById("logoPicker");
+
+        const logoPreview =
+            document.getElementById("logoPreview");
+
+        const logoPreviewPlaceholder =
+            document.getElementById("logoPreviewPlaceholder");
+
+        const logoFileError =
+            document.getElementById("logoFileError");
+
+
+        logoPicker.addEventListener("change", function () {
+
+            logoFileError.textContent = "";
+
+            if (this.files.length === 0) {
+                return;
+            }
+
+            const file = this.files[0];
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+
+                logoFileError.textContent =
+                    "Please select a JPG, PNG or WEBP image.";
+
+                this.value = "";
+
+                return;
+            }
+
+            // Maximum 2 MB
+            if (file.size > 2 * 1024 * 1024) {
+
+                logoFileError.textContent =
+                    "Logo size must be less than 2 MB.";
+
+                this.value = "";
+
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (event) {
+
+                if (logoPreview) {
+
+                    logoPreview.src =
+                        event.target.result;
+
+                    logoPreview.style.display =
+                        "block";
+                }
+
+                if (logoPreviewPlaceholder) {
+
+                    logoPreviewPlaceholder.style.display =
+                        "none";
+                }
+            };
+
+            reader.readAsDataURL(file);
+
+        });
+
+
+        function submitLogo() {
+
+            if (logoPicker.files.length === 0) {
+
+                logoFileError.textContent =
+                    "Please select a logo first.";
+
+                return;
+            }
+
+            document
+                .getElementById("profileForm")
+                .submit();
+        }
+
+    </script>
+}

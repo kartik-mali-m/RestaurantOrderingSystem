@@ -1,0 +1,837 @@
+﻿@model List<RestaurantOrderingSystem.Models.Menu.MenuItem>
+
+@{
+    ViewData["Title"] = "Menu Management";
+
+    var totalItems = Model.Count;
+    var availableItems = Model.Count(x => x.IsAvailable && x.IsActive);
+    var unavailableItems = Model.Count(x => !x.IsAvailable && x.IsActive);
+    var activeCategories = Model
+        .Where(x => x.Category != null && x.IsActive)
+        .Select(x => x.Category!.Name)
+        .Distinct()
+        .Count();
+}
+
+<style>
+    .menu-page {
+        padding: 28px;
+        background: #f7f8fa;
+        min-height: calc(100vh - 70px);
+    }
+
+    .menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        gap: 20px;
+    }
+
+    .menu-header-left h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #202124;
+    }
+
+    .menu-header-left p {
+        margin: 7px 0 0;
+        color: #737780;
+        font-size: 14px;
+    }
+
+    .menu-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .menu-btn {
+        text-decoration: none;
+        border-radius: 9px;
+        padding: 11px 17px;
+        font-size: 14px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        transition: 0.2s ease;
+    }
+
+    .menu-btn-secondary {
+        background: #ffffff;
+        color: #30343b;
+        border: 1px solid #dfe2e7;
+    }
+
+        .menu-btn-secondary:hover {
+            background: #f1f3f5;
+            color: #202124;
+        }
+
+    .menu-btn-primary {
+        background: #ff6b35;
+        color: white;
+        border: 1px solid #ff6b35;
+    }
+
+        .menu-btn-primary:hover {
+            background: #e85a28;
+            color: white;
+        }
+
+    /* ================= SUMMARY ================= */
+
+    .menu-summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .summary-card {
+        background: #ffffff;
+        border: 1px solid #e7e9ed;
+        border-radius: 12px;
+        padding: 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .summary-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        background: #f2f3f5;
+    }
+
+    .summary-content span {
+        display: block;
+        font-size: 13px;
+        color: #777d86;
+        margin-bottom: 4px;
+    }
+
+    .summary-content strong {
+        font-size: 22px;
+        color: #202124;
+    }
+
+    /* ================= TOOLBAR ================= */
+
+    .menu-toolbar {
+        background: #ffffff;
+        border: 1px solid #e7e9ed;
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .menu-search {
+        width: 320px;
+        position: relative;
+    }
+
+        .menu-search input {
+            width: 100%;
+            height: 42px;
+            border: 1px solid #dfe2e7;
+            border-radius: 8px;
+            padding: 0 14px 0 40px;
+            outline: none;
+            font-size: 14px;
+        }
+
+            .menu-search input:focus {
+                border-color: #ff6b35;
+            }
+
+    .menu-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 11px;
+        color: #8a9098;
+    }
+
+    .menu-filter {
+        display: flex;
+        gap: 8px;
+    }
+
+    .filter-btn {
+        border: 1px solid #dfe2e7;
+        background: #ffffff;
+        padding: 9px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        cursor: pointer;
+        color: #555b63;
+    }
+
+        .filter-btn.active {
+            background: #202124;
+            color: #ffffff;
+            border-color: #202124;
+        }
+
+    /* ================= GRID ================= */
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+    }
+
+    .menu-card {
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+        transition: 0.2s ease;
+    }
+
+        .menu-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        }
+
+    .menu-image-wrapper {
+        position: relative;
+        height: 205px;
+        background: #f0f1f3;
+        overflow: hidden;
+    }
+
+    .menu-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .no-image {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #969ba3;
+        font-size: 14px;
+    }
+
+    .availability-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        padding: 6px 10px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .available {
+        background: #e8f7ee;
+        color: #198754;
+    }
+
+    .unavailable {
+        background: #fdecec;
+        color: #dc3545;
+    }
+
+    .menu-card-body {
+        padding: 17px;
+    }
+
+    .menu-category {
+        font-size: 12px;
+        font-weight: 600;
+        color: #ff6b35;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        margin-bottom: 6px;
+    }
+
+    .menu-item-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #202124;
+        margin-bottom: 7px;
+    }
+
+    .menu-description {
+        color: #747a83;
+        font-size: 13px;
+        line-height: 1.5;
+        height: 40px;
+        overflow: hidden;
+        margin-bottom: 13px;
+    }
+
+    .menu-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 1px solid #f0f1f3;
+        padding-top: 13px;
+    }
+
+    .menu-price {
+        font-size: 19px;
+        font-weight: 700;
+        color: #202124;
+    }
+
+    .menu-actions-small {
+        display: flex;
+        gap: 7px;
+    }
+
+    .small-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        border: 1px solid #e0e2e6;
+        background: #ffffff;
+        cursor: pointer;
+    }
+
+        .small-btn:hover {
+            background: #f5f6f7;
+        }
+
+    .small-btn-edit {
+        color: #2563eb;
+    }
+
+    .small-btn-delete {
+        color: #dc3545;
+    }
+
+    /* ================= EMPTY ================= */
+
+    .empty-menu {
+        background: #ffffff;
+        border: 1px dashed #d5d8dd;
+        border-radius: 14px;
+        padding: 70px 20px;
+        text-align: center;
+    }
+
+    .empty-icon {
+        font-size: 50px;
+        margin-bottom: 15px;
+    }
+
+    .empty-menu h3 {
+        margin: 0 0 7px;
+        color: #30343b;
+    }
+
+    .empty-menu p {
+        color: #777d86;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @@media (max-width: 1100px) {
+        .menu-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .menu-summary {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (max-width: 700px) {
+        .menu-page {
+            padding: 18px;
+        }
+
+        .menu-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .menu-toolbar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .menu-search {
+            width: 100%;
+        }
+
+        .menu-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .menu-summary {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="menu-page">
+
+    <!-- ========================================================= -->
+    <!-- HEADER -->
+    <!-- ========================================================= -->
+
+    <div class="menu-header">
+
+        <div class="menu-header-left">
+
+            <h1>Menu Management</h1>
+
+            <p>
+                Manage your restaurant categories and menu items
+            </p>
+
+        </div>
+
+        <div class="menu-actions">
+
+            <a href="/Restaurant/Category/Index"
+               class="menu-btn menu-btn-secondary">
+
+                🏷️
+                Categories
+
+            </a>
+
+            <a href="/Restaurant/Menu/Create"
+               class="menu-btn menu-btn-primary">
+
+                ＋
+                Add Menu Item
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- SUCCESS MESSAGE -->
+    <!-- ========================================================= -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-4">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+
+    <!-- ========================================================= -->
+    <!-- SUMMARY -->
+    <!-- ========================================================= -->
+
+    <div class="menu-summary">
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🍴
+            </div>
+
+            <div class="summary-content">
+
+                <span>Total Items</span>
+
+                <strong>
+                    @totalItems
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                ✅
+            </div>
+
+            <div class="summary-content">
+
+                <span>Available</span>
+
+                <strong>
+                    @availableItems
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                ⛔
+            </div>
+
+            <div class="summary-content">
+
+                <span>Unavailable</span>
+
+                <strong>
+                    @unavailableItems
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <div class="summary-icon">
+                🏷️
+            </div>
+
+            <div class="summary-content">
+
+                <span>Categories</span>
+
+                <strong>
+                    @activeCategories
+                </strong>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- SEARCH + FILTER -->
+    <!-- ========================================================= -->
+
+    <div class="menu-toolbar">
+
+        <div class="menu-search">
+
+            <span class="menu-search-icon">
+                🔍
+            </span>
+
+            <input type="text"
+                   id="menuSearch"
+                   placeholder="Search menu items..." />
+
+        </div>
+
+
+        <div class="menu-filter">
+
+            <button type="button"
+                    class="filter-btn active"
+                    data-filter="all">
+
+                All
+
+            </button>
+
+            <button type="button"
+                    class="filter-btn"
+                    data-filter="available">
+
+                Available
+
+            </button>
+
+            <button type="button"
+                    class="filter-btn"
+                    data-filter="unavailable">
+
+                Unavailable
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================= -->
+    <!-- MENU -->
+    <!-- ========================================================= -->
+    @if (!Model.Any())
+    {
+        <div class="empty-menu">
+
+            <div class="empty-icon">
+                🍽️
+            </div>
+
+            <h3>
+                Your menu is empty
+            </h3>
+
+            <p>
+                Start building your digital menu by adding your first item.
+            </p>
+
+            <a href="/Restaurant/Menu/Create"
+               class="menu-btn menu-btn-primary">
+
+                ＋ Add Your First Menu Item
+
+            </a>
+
+        </div>
+    }
+    else
+    {
+        <div class="menu-grid"
+             id="menuGrid">
+
+            @foreach (var item in Model)
+            {
+                <div class="menu-card"
+                     data-name="@item.Name.ToLower()"
+                     data-available="@item.IsAvailable.ToString().ToLower()">
+
+                    <!-- IMAGE -->
+
+                    <div class="menu-image-wrapper">
+
+                        @if (!string.IsNullOrWhiteSpace(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath"
+                                 class="menu-image"
+                                 alt="@item.Name" />
+                        }
+                        else
+                        {
+                            <div class="no-image">
+                                🍽️ No Image
+                            </div>
+                        }
+
+
+                        <!-- AVAILABILITY -->
+                        @if (item.IsAvailable && item.IsActive)
+                        {
+                            <span class="availability-badge available">
+                                ● Available
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="availability-badge unavailable">
+                                ● Unavailable
+                            </span>
+                        }
+
+                </div>
+
+
+                <!-- BODY -->
+
+                <div class="menu-card-body">
+
+                    <div class="menu-category">
+
+                        @(item.Category?.Name ?? "Uncategorized")
+
+                    </div>
+
+
+                    <div class="menu-item-name">
+
+                        @item.Name
+
+                    </div>
+
+
+                    <div class="menu-description">
+
+                        @(string.IsNullOrWhiteSpace(item.Description)
+                                            ? "No description available."
+                                            : item.Description)
+
+                </div>
+
+
+                        <div class="menu-bottom">
+
+                            <div class="menu-price">
+
+                                ₹@item.Price.ToString("0.00")
+
+                            </div>
+
+
+                            <div class="menu-actions-small">
+
+                                <!-- EDIT -->
+
+                                <a asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   class="small-btn small-btn-edit"
+                                   title="Edit">
+
+                                    ✏️
+
+                                </a>
+
+
+                                <!-- DEACTIVATE -->
+                        @if (item.IsActive)
+                                {
+                                    <form asp-action="Delete"
+                                          asp-route-id="@item.Id"
+                                          method="post"
+                                          style="display:inline;">
+
+                                        @Html.AntiForgeryToken()
+
+                                        <button type="submit"
+                                                class="small-btn small-btn-delete"
+                                                title="Deactivate"
+                                                onclick="return confirm('Deactivate this menu item?');">
+
+                                            🗑️
+
+                                        </button>
+
+                                    </form>
+                                }
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    }
+
+</div>
+
+
+<!-- ============================================================= -->
+<!-- SEARCH + FILTER JAVASCRIPT -->
+<!-- ============================================================= -->
+
+<script>
+
+    const searchInput =
+        document.getElementById("menuSearch");
+
+    const menuCards =
+        document.querySelectorAll(".menu-card");
+
+    const filterButtons =
+        document.querySelectorAll(".filter-btn");
+
+
+    let currentFilter = "all";
+
+
+    function filterMenu() {
+
+        const searchText =
+            searchInput
+                ? searchInput.value.toLowerCase().trim()
+                : "";
+
+
+        menuCards.forEach(card => {
+
+            const name =
+                card.dataset.name || "";
+
+            const available =
+                card.dataset.available === "true";
+
+
+            const matchesSearch =
+                name.includes(searchText);
+
+
+            let matchesFilter = true;
+
+
+            if (currentFilter === "available") {
+
+                matchesFilter = available;
+
+            }
+            else if (currentFilter === "unavailable") {
+
+                matchesFilter = !available;
+
+            }
+
+
+            card.style.display =
+                matchesSearch && matchesFilter
+                    ? ""
+                    : "none";
+
+        });
+
+    }
+
+
+    if (searchInput) {
+
+        searchInput.addEventListener(
+            "input",
+            filterMenu
+        );
+
+    }
+
+
+    filterButtons.forEach(button => {
+
+        button.addEventListener(
+            "click",
+            function () {
+
+                filterButtons.forEach(btn =>
+                    btn.classList.remove("active")
+                );
+
+
+                this.classList.add("active");
+
+
+                currentFilter =
+                    this.dataset.filter;
+
+
+                filterMenu();
+
+            }
+        );
+
+    });
+
+</script>

@@ -1,0 +1,2339 @@
+﻿@{
+    ViewData["Title"] = "Restaurant Dashboard";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Restaurant Admin Dashboard</title>
+
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --sidebar: #111827;
+            --sidebar-hover: #1f2937;
+            --card: #ffffff;
+            --border: #e5e7eb;
+            --primary: #635bff;
+            --primary-light: #eeecff;
+            --green: #16a34a;
+            --green-light: #dcfce7;
+            --orange: #f59e0b;
+            --orange-light: #fef3c7;
+            --red: #ef4444;
+            --red-light: #fee2e2;
+            --blue: #2563eb;
+            --blue-light: #dbeafe;
+            --purple: #7c3aed;
+            --purple-light: #ede9fe;
+            --text: #111827;
+            --muted: #6b7280;
+            --radius: 16px;
+            --shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        button,
+        a {
+            font-family: inherit;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* =========================
+                   SIDEBAR
+                ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 245px;
+            background: var(--sidebar);
+            color: #fff;
+            padding: 22px 14px;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px 12px 25px;
+            border-bottom: 1px solid rgba(255,255,255,.08);
+            margin-bottom: 18px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #635bff, #8b5cf6);
+            font-size: 21px;
+        }
+
+        .brand h2 {
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .brand span {
+            display: block;
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 2px;
+        }
+
+        .nav-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #6b7280;
+            letter-spacing: .9px;
+            margin: 18px 12px 7px;
+            text-transform: uppercase;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 11px 12px;
+            margin-bottom: 3px;
+            border-radius: 10px;
+            color: #d1d5db;
+            font-size: 13px;
+            transition: .2s;
+        }
+
+            .nav-item:hover {
+                background: var(--sidebar-hover);
+                color: white;
+            }
+
+            .nav-item.active {
+                background: linear-gradient(135deg, #635bff, #756cff);
+                color: white;
+                box-shadow: 0 7px 18px rgba(99,91,255,.25);
+            }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            min-width: 21px;
+            height: 21px;
+            padding: 0 6px;
+            border-radius: 20px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* =========================
+                   MAIN
+                ========================= */
+
+        .main {
+            margin-left: 245px;
+            min-height: 100vh;
+        }
+
+        /* =========================
+                   TOPBAR
+                ========================= */
+
+        .topbar {
+            height: 76px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 500;
+        }
+
+        .page-title h1 {
+            font-size: 22px;
+            font-weight: 750;
+        }
+
+        .page-title p {
+            margin-top: 3px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .top-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-box {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 9px 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 12px;
+            color: #374151;
+            background: #fff;
+        }
+
+        .notification {
+            width: 38px;
+            height: 38px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            position: relative;
+        }
+
+            .notification span {
+                position: absolute;
+                right: 5px;
+                top: 4px;
+                width: 7px;
+                height: 7px;
+                background: var(--red);
+                border-radius: 50%;
+            }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding-left: 8px;
+        }
+
+        .profile-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ddd6fe, #c4b5fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #4c1d95;
+        }
+
+        .profile-info strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .profile-info span {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* =========================
+                   CONTENT
+                ========================= */
+
+        .content {
+            padding: 26px 30px 40px;
+        }
+
+        /* =========================
+                   KPI CARDS
+                ========================= */
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .kpi-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 17px;
+            box-shadow: var(--shadow);
+            transition: .2s;
+            cursor: pointer;
+        }
+
+            .kpi-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 9px 25px rgba(15,23,42,.09);
+            }
+
+        .kpi-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kpi-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .icon-purple {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .icon-blue {
+            background: var(--blue-light);
+            color: var(--blue);
+        }
+
+        .icon-green {
+            background: var(--green-light);
+            color: var(--green);
+        }
+
+        .icon-orange {
+            background: var(--orange-light);
+            color: var(--orange);
+        }
+
+        .icon-red {
+            background: var(--red-light);
+            color: var(--red);
+        }
+
+        .kpi-label {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 650;
+            margin-top: 13px;
+        }
+
+        .kpi-value {
+            font-size: 24px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .kpi-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 10px;
+        }
+
+        .positive {
+            color: var(--green);
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        /* =========================
+                   QUICK ACTIONS
+                ========================= */
+
+        .section-label {
+            font-size: 13px;
+            font-weight: 750;
+            margin-bottom: 10px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+            .quick-card:hover {
+                border-color: #c7c4ff;
+                background: #fafaff;
+                transform: translateY(-1px);
+            }
+
+        .quick-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .quick-text strong {
+            display: block;
+            font-size: 11px;
+        }
+
+        .quick-text span {
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        /* =========================
+                   MAIN GRID
+                ========================= */
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.65fr) minmax(320px, .9fr);
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .card-header {
+            padding: 17px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+            .card-header h3 {
+                font-size: 14px;
+                font-weight: 750;
+            }
+
+            .card-header p {
+                margin-top: 3px;
+                color: var(--muted);
+                font-size: 10px;
+            }
+
+        .view-link {
+            color: var(--primary);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* =========================
+                   LIVE ORDERS
+                ========================= */
+
+        .orders-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .orders-table th {
+                background: #fafafa;
+                color: #6b7280;
+                text-align: left;
+                font-size: 9px;
+                font-weight: 750;
+                padding: 11px 14px;
+                border-bottom: 1px solid var(--border);
+                text-transform: uppercase;
+            }
+
+            .orders-table td {
+                padding: 13px 14px;
+                border-bottom: 1px solid #f1f1f1;
+                font-size: 11px;
+                white-space: nowrap;
+            }
+
+            .orders-table tbody tr:hover {
+                background: #fafaff;
+            }
+
+        .order-id {
+            font-weight: 750;
+            color: #374151;
+        }
+
+        .customer {
+            font-weight: 600;
+        }
+
+        .type-badge,
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 8px;
+            border-radius: 7px;
+            font-size: 9px;
+            font-weight: 750;
+        }
+
+        .type-dine {
+            background: var(--purple-light);
+            color: var(--purple);
+        }
+
+        .type-online {
+            background: var(--orange-light);
+            color: #b45309;
+        }
+
+        .status-preparing {
+            background: var(--orange-light);
+            color: #b45309;
+        }
+
+        .status-confirmed {
+            background: var(--green-light);
+            color: #15803d;
+        }
+
+        .status-ready {
+            background: var(--blue-light);
+            color: #1d4ed8;
+        }
+
+        .status-delivery {
+            background: var(--red-light);
+            color: #b91c1c;
+        }
+
+        .table-number {
+            background: #f3f4f6;
+            padding: 4px 7px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 750;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .small-btn {
+            border: 1px solid var(--border);
+            background: white;
+            padding: 5px 7px;
+            border-radius: 6px;
+            font-size: 9px;
+            cursor: pointer;
+        }
+
+            .small-btn.primary {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+        /* =========================
+                   SUMMARY
+                ========================= */
+
+        .summary-body {
+            padding: 18px;
+        }
+
+        .revenue-number {
+            font-size: 30px;
+            font-weight: 850;
+        }
+
+        .revenue-change {
+            margin-top: 4px;
+            font-size: 10px;
+        }
+
+        .chart {
+            height: 135px;
+            margin-top: 20px;
+            display: flex;
+            align-items: end;
+            gap: 5px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, #635bff, #a78bfa);
+            border-radius: 5px 5px 0 0;
+            opacity: .9;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .summary-stat {
+            padding: 11px;
+            background: #f9fafb;
+            border-radius: 10px;
+        }
+
+            .summary-stat span {
+                display: block;
+                color: var(--muted);
+                font-size: 9px;
+            }
+
+            .summary-stat strong {
+                display: block;
+                margin-top: 3px;
+                font-size: 15px;
+            }
+
+        /* =========================
+                   LOWER GRID
+                ========================= */
+
+        .lower-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 1fr 1fr;
+            gap: 18px;
+            margin-top: 18px;
+        }
+
+        .panel-body {
+            padding: 15px 17px;
+        }
+
+        /* =========================
+                   TABLE STATUS
+                ========================= */
+
+        .tables-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .restaurant-table {
+            padding: 11px 5px;
+            border-radius: 9px;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 750;
+            border: 1px solid;
+        }
+
+        .occupied {
+            background: #fef2f2;
+            color: #dc2626;
+            border-color: #fecaca;
+        }
+
+        .available {
+            background: #eff6ff;
+            color: #2563eb;
+            border-color: #bfdbfe;
+        }
+
+        .reserved {
+            background: #fff7ed;
+            color: #ea580c;
+            border-color: #fed7aa;
+        }
+
+        .table-legend {
+            display: flex;
+            gap: 14px;
+            margin-top: 13px;
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        .dot {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        /* =========================
+                   PAYMENTS
+                ========================= */
+
+        .payment-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .payment-left {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .payment-icon {
+            width: 31px;
+            height: 31px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ecfdf5;
+            color: #059669;
+        }
+
+        .payment-left strong {
+            display: block;
+            font-size: 10px;
+        }
+
+        .payment-left span {
+            display: block;
+            color: var(--muted);
+            font-size: 8px;
+            margin-top: 2px;
+        }
+
+        .payment-right {
+            text-align: right;
+        }
+
+            .payment-right strong {
+                display: block;
+                font-size: 10px;
+            }
+
+        .paid {
+            color: var(--green);
+            font-size: 8px;
+        }
+
+        /* =========================
+                   ALERTS
+                ========================= */
+
+        .alert-row {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .food-image {
+            width: 34px;
+            height: 34px;
+            border-radius: 8px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 17px;
+        }
+
+        .alert-info {
+            flex: 1;
+        }
+
+            .alert-info strong {
+                display: block;
+                font-size: 10px;
+            }
+
+            .alert-info span {
+                display: block;
+                color: var(--muted);
+                font-size: 8px;
+                margin-top: 2px;
+            }
+
+        .low-stock {
+            padding: 4px 6px;
+            background: var(--red-light);
+            color: #b91c1c;
+            border-radius: 6px;
+            font-size: 8px;
+            font-weight: 750;
+        }
+
+        /* =========================
+                   BOTTOM STATS
+                ========================= */
+
+        .bottom-stats {
+            margin-top: 18px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+        }
+
+        .bottom-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .bottom-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-card span {
+            color: var(--muted);
+            font-size: 9px;
+        }
+
+        .bottom-card strong {
+            display: block;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        /* =========================
+                   RESPONSIVE
+                ========================= */
+
+        @@Smedia(max - width: 1300px)
+
+        {
+            .kpi-grid
+
+        {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .quick-actions {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .lower-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .bottom-stats {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        }
+
+        @@media(max - width: 1000px)
+
+        {
+            .sidebar
+
+        {
+            width: 75px;
+        }
+
+        .brand h2,
+        .brand span,
+        .nav-title,
+        .nav-item span:not(.nav-icon),
+        .nav-badge {
+            display: none;
+        }
+
+        .brand {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .nav-item {
+            justify-content: center;
+        }
+
+        .main {
+            margin-left: 75px;
+        }
+
+        .main-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .lower-grid {
+            grid-template-columns: 1fr;
+        }
+
+        }
+
+        @@media(max - width: 700px)
+
+        {
+            .topbar
+
+        {
+            padding: 0 15px;
+        }
+
+        .date-box,
+        .profile-info {
+            display: none;
+        }
+
+        .content {
+            padding: 18px 14px;
+        }
+
+        .kpi-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .quick-actions {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .bottom-stats {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .orders-table {
+            min-width: 850px;
+        }
+
+        .card {
+            overflow-x: auto;
+        }
+
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================================================
+         SIDEBAR
+    ========================================================== -->
+
+    <aside class="sidebar">
+
+        <!-- ========================================================= -->
+        <!-- BRAND -->
+        <!-- ========================================================= -->
+
+        <div class="brand">
+            <div class="brand-logo">🍽️</div>
+
+            <div>
+                <h2>@ViewBag.RestaurantName</h2>
+                <span>Restaurant Admin</span>
+            </div>
+        </div>
+
+
+        <!-- ========================================================= -->
+        <!-- MAIN -->
+        <!-- ========================================================= -->
+
+        <div class="nav-title">Main</div>
+
+        <!-- Dashboard -->
+        <a href="/Restaurant/Dashboard/Index"
+           class="nav-item">
+            <span class="nav-icon">▦</span>
+            <span>Dashboard</span>
+        </a>
+
+
+        <!-- Live Orders -->
+        <a href="/Restaurant/Orders/Live"
+           class="nav-item">
+            <span class="nav-icon">🔴</span>
+            <span>Live Orders</span>
+
+            <span class="nav-badge">
+                12
+            </span>
+        </a>
+
+
+        <!-- Today's Orders -->
+        <a href="/Restaurant/Orders/Today"
+           class="nav-item">
+            <span class="nav-icon">📋</span>
+            <span>Today's Orders</span>
+        </a>
+
+
+        <!-- Online Orders -->
+        <a href="/Restaurant/Orders/Online"
+           class="nav-item">
+            <span class="nav-icon">🌐</span>
+            <span>Online Orders</span>
+        </a>
+
+
+        <!-- Table Bookings -->
+        <a href="/Restaurant/TableBookings/Index"
+           class="nav-item">
+            <span class="nav-icon">🪑</span>
+            <span>Table Bookings</span>
+        </a>
+
+
+        <!-- Payments -->
+        <a href="/Restaurant/Payments/Index"
+           class="nav-item">
+            <span class="nav-icon">💳</span>
+            <span>Payments</span>
+        </a>
+
+
+        <!-- Customers -->
+        <a href="/Restaurant/Customers/Index"
+           class="nav-item">
+            <span class="nav-icon">👥</span>
+            <span>Customers</span>
+        </a>
+
+
+        <!-- ========================================================= -->
+        <!-- MANAGEMENT -->
+        <!-- ========================================================= -->
+
+        <div class="nav-title">Management</div>
+
+
+        <!-- Menu Management -->
+        <a href="/Restaurant/Menu/Index"
+           class="nav-item">
+
+            <span class="nav-icon">🍴</span>
+            <span>Menu Management</span>
+
+        </a>
+
+
+        <!-- Categories -->
+        <a href="/Restaurant/Category/Index"
+           class="nav-item">
+
+            <span class="nav-icon">🏷️</span>
+            <span>Categories</span>
+
+        </a>
+
+
+        <!-- Table Management -->
+        <a href="/Restaurant/Table/Index"
+           class="nav-item">
+
+            <span class="nav-icon">🪑</span>
+            <span>Table Management</span>
+
+        </a>
+
+
+        <!-- Inventory -->
+        <a href="/Restaurant/Inventory/Index"
+           class="nav-item">
+
+            <span class="nav-icon">📦</span>
+            <span>Inventory</span>
+
+        </a>
+
+
+        <!-- Offers -->
+        <a href="/Restaurant/Offer/Index"
+           class="nav-item">
+
+            <span class="nav-icon">🎁</span>
+            <span>Offers</span>
+
+        </a>
+
+
+        <!-- QR Code -->
+        <a href="/Restaurant/QRCode/Index"
+           class="nav-item">
+
+            <span class="nav-icon">▣</span>
+            <span>QR Code</span>
+
+        </a>
+
+
+        <!-- ========================================================= -->
+        <!-- REPORTS -->
+        <!-- ========================================================= -->
+
+        <div class="nav-title">Reports</div>
+
+
+        <!-- Sales Report -->
+        <a href="/Restaurant/Reports/Sales"
+           class="nav-item">
+
+            <span class="nav-icon">📊</span>
+            <span>Sales Report</span>
+
+        </a>
+
+
+        <!-- Orders Report -->
+        <a href="/Restaurant/Reports/Orders"
+           class="nav-item">
+
+            <span class="nav-icon">📈</span>
+            <span>Orders Report</span>
+
+        </a>
+
+
+        <!-- Customer Report -->
+        <a href="/Restaurant/Reports/Customers"
+           class="nav-item">
+
+            <span class="nav-icon">👥</span>
+            <span>Customer Report</span>
+
+        </a>
+
+
+        <!-- ========================================================= -->
+        <!-- SETTINGS -->
+        <!-- ========================================================= -->
+
+        <div class="nav-title">Settings</div>
+
+
+        <!-- Restaurant Profile -->
+        <a href="/Restaurant/Profile/Index"
+           class="nav-item">
+
+            <span class="nav-icon">🏪</span>
+            <span>Restaurant Profile</span>
+
+        </a>
+
+
+        <!-- Settings -->
+        <a href="/Restaurant/Settings/Index"
+           class="nav-item">
+
+            <span class="nav-icon">⚙️</span>
+            <span>Settings</span>
+
+        </a>
+
+
+        <!-- ========================================================= -->
+        <!-- LOGOUT -->
+        <!-- ========================================================= -->
+
+        <form action="/Auth/Logout"
+              method="post"
+              style="margin-top:4px;">
+
+            @Html.AntiForgeryToken()
+
+            <button type="submit"
+                    class="nav-item"
+                    style="width:100%; border:0; background:transparent; cursor:pointer;">
+
+                <span class="nav-icon">↪</span>
+                <span>Logout</span>
+
+            </button>
+
+        </form>
+
+    </aside>
+
+
+    <!-- =========================================================
+         MAIN
+    ========================================================== -->
+
+    <div class="main">
+
+        <!-- TOPBAR -->
+
+        <header class="topbar">
+
+            <div class="page-title">
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's what's happening at your restaurant today.</p>
+            </div>
+
+            <div class="top-actions">
+
+                <div class="date-box">
+                    📅
+                    <span id="todayDate">Today</span>
+                </div>
+
+                <button class="notification">
+                    🔔
+                    <span></span>
+                </button>
+
+                <div class="profile">
+
+                    @* <div class="profile-avatar">
+                        @ViewBag.RestaurantName.Substring(0, 1).ToUpper()
+                    </div> *@
+
+                    <div class="profile-info">
+                        <strong>@ViewBag.RestaurantName</strong>
+                        <span>Restaurant Admin</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </header>
+
+
+        <!-- CONTENT -->
+
+        <main class="content">
+
+
+            <!-- =================================================
+                 TOP KPI CARDS
+            ================================================== -->
+
+            <div class="kpi-grid">
+
+                <div class="kpi-card"
+                     onclick="showMessage('Opening Live Orders...')">
+
+                    <div class="kpi-top">
+                        <div class="kpi-icon icon-red">🔴</div>
+                        <span>→</span>
+                    </div>
+
+                    <div class="kpi-label">
+                        Live Orders
+                    </div>
+
+                    <div class="kpi-value">
+                        12
+                    </div>
+
+                    <div class="kpi-footer">
+                        <span class="positive">8 preparing</span>
+                        <span class="muted">View orders</span>
+                    </div>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <div class="kpi-icon icon-blue">📋</div>
+                        <span>→</span>
+                    </div>
+
+                    <div class="kpi-label">
+                        Today's Orders
+                    </div>
+
+                    <div class="kpi-value">
+                        86
+                    </div>
+
+                    <div class="kpi-footer">
+                        <span class="positive">+8.2%</span>
+                        <span class="muted">vs yesterday</span>
+                    </div>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <div class="kpi-icon icon-purple">🌐</div>
+                        <span>→</span>
+                    </div>
+
+                    <div class="kpi-label">
+                        Online Orders
+                    </div>
+
+                    <div class="kpi-value">
+                        34
+                    </div>
+
+                    <div class="kpi-footer">
+                        <span class="positive">39.5%</span>
+                        <span class="muted">of today's orders</span>
+                    </div>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <div class="kpi-icon icon-orange">🪑</div>
+                        <span>→</span>
+                    </div>
+
+                    <div class="kpi-label">
+                        Table Bookings
+                    </div>
+
+                    <div class="kpi-value">
+                        18
+                    </div>
+
+                    <div class="kpi-footer">
+                        <span class="positive">6 upcoming</span>
+                        <span class="muted">today</span>
+                    </div>
+
+                </div>
+
+
+                <div class="kpi-card">
+
+                    <div class="kpi-top">
+                        <div class="kpi-icon icon-green">₹</div>
+                        <span>→</span>
+                    </div>
+
+                    <div class="kpi-label">
+                        Today's Revenue
+                    </div>
+
+                    <div class="kpi-value">
+                        ₹24,680
+                    </div>
+
+                    <div class="kpi-footer">
+                        <span class="positive">+12.5%</span>
+                        <span class="muted">vs yesterday</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 QUICK ACTIONS
+            ================================================== -->
+
+            <div class="section-label">
+                Quick Access
+            </div>
+
+            <div class="quick-actions">
+
+                <div class="quick-card"
+                     onclick="showMessage('Opening Live Orders...')">
+
+                    <div class="quick-icon">🔴</div>
+
+                    <div class="quick-text">
+                        <strong>Live Orders</strong>
+                        <span>12 active orders</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-card">
+
+                    <div class="quick-icon">📋</div>
+
+                    <div class="quick-text">
+                        <strong>Today's Orders</strong>
+                        <span>86 total orders</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-card">
+
+                    <div class="quick-icon">🌐</div>
+
+                    <div class="quick-text">
+                        <strong>Online Orders</strong>
+                        <span>34 online orders</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-card">
+
+                    <div class="quick-icon">🪑</div>
+
+                    <div class="quick-text">
+                        <strong>Table Bookings</strong>
+                        <span>18 bookings</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-card">
+
+                    <div class="quick-icon">💳</div>
+
+                    <div class="quick-text">
+                        <strong>Payments</strong>
+                        <span>₹24,680 collected</span>
+                    </div>
+
+                </div>
+
+
+                <div class="quick-card">
+
+                    <div class="quick-icon">🍴</div>
+
+                    <div class="quick-text">
+                        <strong>Menu</strong>
+                        <span>128 active items</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 MAIN DASHBOARD
+            ================================================== -->
+
+            <div class="main-grid">
+
+
+                <!-- LIVE ORDERS -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>🔴 Live Orders</h3>
+                            <p>Orders that currently need your attention</p>
+                        </div>
+
+                        <a href="#" class="view-link">
+                            View All →
+                        </a>
+
+                    </div>
+
+
+                    <div style="overflow-x:auto;">
+
+                        <table class="orders-table">
+
+                            <thead>
+
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Type</th>
+                                    <th>Customer</th>
+                                    <th>Table No.</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Time</th>
+                                    <th>Action</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody>
+
+                                <tr>
+
+                                    <td>
+                                        <span class="order-id">#ORD-1025</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="type-badge type-dine">
+                                            Dine In
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="customer">
+                                            Rahul Sharma
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="table-number">
+                                            T-05
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₹850
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-preparing">
+                                            Preparing
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        5 min ago
+                                    </td>
+
+                                    <td>
+
+                                        <div class="order-actions">
+
+                                            <button class="small-btn primary"
+                                                    onclick="showMessage('Order #ORD-1025 opened')">
+                                                View
+                                            </button>
+
+                                            <button class="small-btn">
+                                                ✓
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="order-id">#ORD-1024</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="type-badge type-online">
+                                            Online
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="customer">
+                                            Priya Singh
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="table-number">
+                                            —
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₹620
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-confirmed">
+                                            Confirmed
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        8 min ago
+                                    </td>
+
+                                    <td>
+
+                                        <div class="order-actions">
+
+                                            <button class="small-btn primary"
+                                                    onclick="showMessage('Order #ORD-1024 opened')">
+                                                View
+                                            </button>
+
+                                            <button class="small-btn">
+                                                ✓
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="order-id">#ORD-1023</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="type-badge type-dine">
+                                            Dine In
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="customer">
+                                            Amit Kumar
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="table-number">
+                                            T-02
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₹1,250
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-preparing">
+                                            Preparing
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        10 min ago
+                                    </td>
+
+                                    <td>
+
+                                        <div class="order-actions">
+
+                                            <button class="small-btn primary">
+                                                View
+                                            </button>
+
+                                            <button class="small-btn">
+                                                ✓
+                                            </button>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="order-id">#ORD-1022</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="type-badge type-online">
+                                            Online
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="customer">
+                                            Sneha Patel
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="table-number">
+                                            —
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₹450
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-delivery">
+                                            Out for Delivery
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        15 min ago
+                                    </td>
+
+                                    <td>
+
+                                        <button class="small-btn primary">
+                                            View
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+
+                                <tr>
+
+                                    <td>
+                                        <span class="order-id">#ORD-1021</span>
+                                    </td>
+
+                                    <td>
+                                        <span class="type-badge type-dine">
+                                            Dine In
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="customer">
+                                            Vikram Joshi
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        <span class="table-number">
+                                            T-08
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        ₹920
+                                    </td>
+
+                                    <td>
+                                        <span class="status-badge status-ready">
+                                            Ready
+                                        </span>
+                                    </td>
+
+                                    <td>
+                                        18 min ago
+                                    </td>
+
+                                    <td>
+
+                                        <button class="small-btn primary">
+                                            View
+                                        </button>
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </section>
+
+
+                <!-- TODAY'S SUMMARY -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>📊 Today's Summary</h3>
+                            <p>Restaurant performance today</p>
+                        </div>
+
+                        <span class="muted"
+                              style="font-size:10px;">
+                            Today
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-body">
+
+                        <div class="muted"
+                             style="font-size:10px;">
+                            Total Revenue
+                        </div>
+
+                        <div class="revenue-number">
+                            ₹24,680
+                        </div>
+
+                        <div class="revenue-change positive">
+                            ↑ 12.5% compared with yesterday
+                        </div>
+
+
+                        <div class="chart">
+
+                            <div class="bar" style="height:28%;"></div>
+                            <div class="bar" style="height:35%;"></div>
+                            <div class="bar" style="height:45%;"></div>
+                            <div class="bar" style="height:38%;"></div>
+                            <div class="bar" style="height:58%;"></div>
+                            <div class="bar" style="height:49%;"></div>
+                            <div class="bar" style="height:67%;"></div>
+                            <div class="bar" style="height:61%;"></div>
+                            <div class="bar" style="height:76%;"></div>
+                            <div class="bar" style="height:70%;"></div>
+                            <div class="bar" style="height:88%;"></div>
+                            <div class="bar" style="height:94%;"></div>
+
+                        </div>
+
+
+                        <div class="summary-stats">
+
+                            <div class="summary-stat">
+                                <span>Total Orders</span>
+                                <strong>86</strong>
+                            </div>
+
+                            <div class="summary-stat">
+                                <span>Online Orders</span>
+                                <strong>34</strong>
+                            </div>
+
+                            <div class="summary-stat">
+                                <span>Avg Order Value</span>
+                                <strong>₹287</strong>
+                            </div>
+
+                            <div class="summary-stat">
+                                <span>New Customers</span>
+                                <strong>12</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOWER MODULES
+            ================================================== -->
+
+            <div class="lower-grid">
+
+
+                <!-- TABLE STATUS -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>🪑 Table Status</h3>
+                            <p>Live dining floor</p>
+                        </div>
+
+                        <a href="#" class="view-link">
+                            Manage →
+                        </a>
+
+                    </div>
+
+                    <div class="panel-body">
+
+                        <div class="tables-grid">
+
+                            <div class="restaurant-table occupied">
+                                T-01<br />
+                                Occupied
+                            </div>
+
+                            <div class="restaurant-table occupied">
+                                T-02<br />
+                                Occupied
+                            </div>
+
+                            <div class="restaurant-table occupied">
+                                T-03<br />
+                                Occupied
+                            </div>
+
+                            <div class="restaurant-table occupied">
+                                T-04<br />
+                                Occupied
+                            </div>
+
+                            <div class="restaurant-table occupied">
+                                T-05<br />
+                                Occupied
+                            </div>
+
+                            <div class="restaurant-table available">
+                                T-06<br />
+                                Available
+                            </div>
+
+                            <div class="restaurant-table available">
+                                T-07<br />
+                                Available
+                            </div>
+
+                            <div class="restaurant-table available">
+                                T-08<br />
+                                Available
+                            </div>
+
+                            <div class="restaurant-table available">
+                                T-09<br />
+                                Available
+                            </div>
+
+                            <div class="restaurant-table available">
+                                T-10<br />
+                                Available
+                            </div>
+
+                            <div class="restaurant-table reserved">
+                                T-11<br />
+                                Reserved
+                            </div>
+
+                            <div class="restaurant-table reserved">
+                                T-12<br />
+                                Reserved
+                            </div>
+
+                        </div>
+
+
+                        <div class="table-legend">
+
+                            <span>
+                                <i class="dot"
+                                   style="background:#ef4444;"></i>
+                                Occupied
+                            </span>
+
+                            <span>
+                                <i class="dot"
+                                   style="background:#2563eb;"></i>
+                                Available
+                            </span>
+
+                            <span>
+                                <i class="dot"
+                                   style="background:#f59e0b;"></i>
+                                Reserved
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- RECENT PAYMENTS -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>💳 Recent Payments</h3>
+                            <p>Latest transactions</p>
+                        </div>
+
+                        <a href="#" class="view-link">
+                            View All →
+                        </a>
+
+                    </div>
+
+                    <div class="panel-body">
+
+
+                        <div class="payment-row">
+
+                            <div class="payment-left">
+
+                                <div class="payment-icon">
+                                    ₹
+                                </div>
+
+                                <div>
+                                    <strong>#PAY-2051</strong>
+                                    <span>UPI · 10:30 AM</span>
+                                </div>
+
+                            </div>
+
+                            <div class="payment-right">
+                                <strong>₹850</strong>
+                                <span class="paid">Completed</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <div class="payment-left">
+
+                                <div class="payment-icon">
+                                    ₹
+                                </div>
+
+                                <div>
+                                    <strong>#PAY-2050</strong>
+                                    <span>UPI · 10:25 AM</span>
+                                </div>
+
+                            </div>
+
+                            <div class="payment-right">
+                                <strong>₹620</strong>
+                                <span class="paid">Completed</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <div class="payment-left">
+
+                                <div class="payment-icon">
+                                    ₹
+                                </div>
+
+                                <div>
+                                    <strong>#PAY-2049</strong>
+                                    <span>Card · 10:20 AM</span>
+                                </div>
+
+                            </div>
+
+                            <div class="payment-right">
+                                <strong>₹1,250</strong>
+                                <span class="paid">Completed</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="payment-row">
+
+                            <div class="payment-left">
+
+                                <div class="payment-icon">
+                                    ₹
+                                </div>
+
+                                <div>
+                                    <strong>#PAY-2048</strong>
+                                    <span>Cash · 10:15 AM</span>
+                                </div>
+
+                            </div>
+
+                            <div class="payment-right">
+                                <strong>₹450</strong>
+                                <span class="paid">Completed</span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- LOW STOCK -->
+
+                <section class="card">
+
+                    <div class="card-header">
+
+                        <div>
+                            <h3>⚠️ Low Stock</h3>
+                            <p>Inventory needs attention</p>
+                        </div>
+
+                        <a href="#" class="view-link">
+                            Inventory →
+                        </a>
+
+                    </div>
+
+
+                    <div class="panel-body">
+
+
+                        <div class="alert-row">
+
+                            <div class="food-image">
+                                🍅
+                            </div>
+
+                            <div class="alert-info">
+                                <strong>Tomato</strong>
+                                <span>2.5 kg remaining · Minimum 5 kg</span>
+                            </div>
+
+                            <span class="low-stock">
+                                Low
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-row">
+
+                            <div class="food-image">
+                                🧀
+                            </div>
+
+                            <div class="alert-info">
+                                <strong>Cheese</strong>
+                                <span>1.2 kg remaining · Minimum 3 kg</span>
+                            </div>
+
+                            <span class="low-stock">
+                                Low
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-row">
+
+                            <div class="food-image">
+                                🫒
+                            </div>
+
+                            <div class="alert-info">
+                                <strong>Olive Oil</strong>
+                                <span>0.8 L remaining · Minimum 2 L</span>
+                            </div>
+
+                            <span class="low-stock">
+                                Low
+                            </span>
+
+                        </div>
+
+
+                        <div class="alert-row">
+
+                            <div class="food-image">
+                                🍗
+                            </div>
+
+                            <div class="alert-info">
+                                <strong>Chicken</strong>
+                                <span>1.5 kg remaining · Minimum 3 kg</span>
+                            </div>
+
+                            <span class="low-stock">
+                                Low
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOTTOM BUSINESS SUMMARY
+            ================================================== -->
+
+            <div class="bottom-stats">
+
+
+                <div class="bottom-card">
+
+                    <div class="bottom-icon">
+                        👥
+                    </div>
+
+                    <div>
+                        <span>Total Customers</span>
+                        <strong>1,253</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-card">
+
+                    <div class="bottom-icon">
+                        🔁
+                    </div>
+
+                    <div>
+                        <span>Repeat Customers</span>
+                        <strong>856</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-card">
+
+                    <div class="bottom-icon">
+                        🍴
+                    </div>
+
+                    <div>
+                        <span>Total Menu Items</span>
+                        <strong>128</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-card">
+
+                    <div class="bottom-icon">
+                        👨‍🍳
+                    </div>
+
+                    <div>
+                        <span>Staff Members</span>
+                        <strong>15</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="bottom-card">
+
+                    <div class="bottom-icon">
+                        🟢
+                    </div>
+
+                    <div>
+                        <span>Restaurant Status</span>
+                        <strong style="color:#16a34a;">
+                            Open
+                        </strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        // Today's date
+        const dateElement = document.getElementById("todayDate");
+
+        const today = new Date();
+
+        dateElement.innerText = today.toLocaleDateString(
+            "en-IN",
+            {
+                day: "2-digit",
+                month: "short",
+                year: "numeric"
+            }
+        );
+
+
+        // Simple notification
+        function showMessage(message) {
+
+            const toast = document.createElement("div");
+
+            toast.innerText = message;
+
+            toast.style.position = "fixed";
+            toast.style.right = "25px";
+            toast.style.bottom = "25px";
+            toast.style.background = "#111827";
+            toast.style.color = "white";
+            toast.style.padding = "12px 18px";
+            toast.style.borderRadius = "10px";
+            toast.style.fontSize = "12px";
+            toast.style.zIndex = "9999";
+            toast.style.boxShadow = "0 8px 30px rgba(0,0,0,.2)";
+
+            document.body.appendChild(toast);
+
+            setTimeout(function () {
+                toast.remove();
+            }, 2200);
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Restaurant Ordering System
+    </title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/admin.css"
+          asp-append-version="true" />
+</head>
+
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+
+        <!-- SIDEBAR -->
+
+        <aside class="admin-sidebar">
+
+            <div class="brand-section">
+
+                <div class="brand-logo">
+                    <span>R</span>
+                </div>
+
+                <div>
+                    <div class="brand-name">
+                        RestaurantOS
+                    </div>
+
+                    <div class="brand-subtitle">
+                        Administration
+                    </div>
+                </div>
+
+            </div>
+
+
+            <div class="sidebar-section-title">
+                MAIN MENU
+            </div>
+
+
+            <nav class="admin-nav">
+
+                <a href="/Admin/Dashboard/Index"
+                   class="admin-nav-item">
+
+                    <span class="nav-icon">⌂</span>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+
+                <a href="/Admin/Restaurant/Pending"
+                   class="admin-nav-item">
+
+                    <span class="nav-icon">▣</span>
+
+                    <span>Restaurants</span>
+
+                </a>
+
+
+                <a asp-area="Admin"
+                   asp-controller="User"
+                   asp-action="Index"
+                   class="admin-nav-item">
+
+                    <span class="nav-icon">◉</span>
+
+                    <span>Users</span>
+
+                </a>
+
+
+                <a asp-area="Admin"
+                   asp-controller="Reports"
+                   asp-action="Index"
+                   class="admin-nav-item">
+
+                    <span class="nav-icon">▤</span>
+
+                    <span>Reports</span>
+
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-section-title">
+                SYSTEM
+            </div>
+
+
+            <nav class="admin-nav">
+
+                <a href="#"
+                   class="admin-nav-item">
+
+                    <span class="nav-icon">⚙</span>
+
+                    <span>Settings</span>
+
+                </a>
+
+            </nav>
+
+
+            <div class="sidebar-bottom">
+
+                <div class="admin-profile">
+
+                    <div class="profile-avatar">
+                        SA
+                    </div>
+
+                    <div class="profile-info">
+
+                        <div class="profile-name">
+                            Super Admin
+                        </div>
+
+                        <div class="profile-role">
+                            System Administrator
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <form action="/Auth/Logout" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="logout-button">
+                        <span>↪</span>
+                        <span>Logout</span>
+                    </button>
+                </form>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN AREA -->
+
+        <main class="admin-main">
+
+            <!-- TOP HEADER -->
+
+            <header class="admin-header">
+
+                <div class="header-left">
+
+                    <button class="mobile-menu-button"
+                            type="button"
+                            onclick="toggleSidebar()">
+
+                        ☰
+
+                    </button>
+
+                    <div>
+
+                        <div class="header-title">
+                            @ViewData["Title"]
+                        </div>
+
+                        <div class="header-date">
+                            Administration Panel
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="header-right">
+
+                    <div class="notification-button">
+                        <span>♢</span>
+
+                        <span class="notification-dot"></span>
+                    </div>
+
+
+                    <div class="header-user">
+
+                        <div class="header-avatar">
+                            SA
+                        </div>
+
+                        <div class="header-user-info">
+
+                            <div>
+                                Super Admin
+                            </div>
+
+                            <small>
+                                Administrator
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- PAGE CONTENT -->
+
+            <section class="admin-content">
+
+                @RenderBody()
+
+            </section>
+
+
+            <!-- FOOTER -->
+
+            <footer class="admin-footer">
+
+                <span>
+                    © @DateTime.Now.Year Restaurant Ordering System
+                </span>
+
+                <span>
+                    Admin Panel
+                </span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+
+        function toggleSidebar() {
+
+            document
+                .querySelector(".admin-sidebar")
+                .classList.toggle("sidebar-open");
+
+        }
+
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+﻿@model List<RestaurantOrderingSystem.Models.Restaurant.Restaurant>
+
+@{
+    ViewData["Title"] = "Pending Restaurants";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-page">
+
+    <div class="mb-4">
+        <h2>Pending Restaurants</h2>
+        <p class="text-muted">
+            Review restaurant registrations before approving them.
+        </p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            No pending restaurants found.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-sm">
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Restaurant</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>GST</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var restaurant in Model)
+                            {
+                                <tr>
+
+                                    <td>
+                                        @restaurant.Id
+                                    </td>
+
+                                    <td>
+                                        <strong>
+                                            @restaurant.Name
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        @restaurant.Email
+                                    </td>
+
+                                    <td>
+                                        @restaurant.Phone
+                                    </td>
+
+                                    <td>
+                                        @restaurant.Address
+                                    </td>
+
+                                    <td>
+                                        @(string.IsNullOrWhiteSpace(
+                                                                        restaurant.GSTNumber)
+                                                                        ? "N/A"
+                                                                        : restaurant.GSTNumber)
+                            </td>
+
+                                    <td>
+                                        <span class="badge bg-warning text-dark">
+                                            @restaurant.Status
+                                        </span>
+                                    </td>
+
+                                    <td>
+
+                                        <form action="/Admin/Restaurant/Approve" method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@restaurant.Id" />
+
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm"
+                                                    onclick="return confirm('Are you sure you want to approve this restaurant?');">
+
+                                                Approve
+
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+
+                                </tr>
+                                                }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

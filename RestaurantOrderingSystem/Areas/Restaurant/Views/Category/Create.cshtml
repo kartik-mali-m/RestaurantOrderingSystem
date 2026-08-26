@@ -1,0 +1,536 @@
+﻿@model RestaurantOrderingSystem.ViewModels.Menu.CategoryVM
+
+@{
+    ViewData["Title"] = "Add Category";
+}
+
+<style>
+    .category-create-page {
+        min-height: calc(100vh - 70px);
+        background: #f6f7f9;
+        padding: 30px;
+    }
+
+    .category-create-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    /* ================= HEADER ================= */
+
+    .create-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 25px;
+    }
+
+    .back-button {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #fff;
+        border: 1px solid #e1e4e8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        color: #333840;
+        font-size: 20px;
+        transition: .2s ease;
+    }
+
+    .back-button:hover {
+        background: #f0f1f3;
+        color: #111;
+    }
+
+    .create-header h1 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 750;
+        color: #202328;
+    }
+
+    .create-header p {
+        margin: 7px 0 0;
+        color: #777d86;
+        font-size: 14px;
+    }
+
+    /* ================= MAIN CARD ================= */
+
+    .create-card {
+        background: #fff;
+        border: 1px solid #e4e7eb;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    .card-header {
+        padding: 20px 23px;
+        border-bottom: 1px solid #edf0f2;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .step-number {
+        width: 31px;
+        height: 31px;
+        border-radius: 50%;
+        background: #202328;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .card-header strong {
+        display: block;
+        font-size: 16px;
+        color: #292d33;
+    }
+
+    .card-header span {
+        display: block;
+        margin-top: 3px;
+        color: #858b93;
+        font-size: 12px;
+    }
+
+    .card-body {
+        padding: 24px;
+    }
+
+    /* ================= FORM ================= */
+
+    .form-group {
+        margin-bottom: 21px;
+    }
+
+    .form-group:last-child {
+        margin-bottom: 0;
+    }
+
+    .form-label-custom {
+        display: block;
+        font-size: 13px;
+        font-weight: 650;
+        color: #34383e;
+        margin-bottom: 8px;
+    }
+
+    .required {
+        color: #e5484d;
+    }
+
+    .input-custom,
+    .textarea-custom {
+        width: 100%;
+        border: 1px solid #dfe3e7;
+        background: #fff;
+        border-radius: 9px;
+        padding: 12px 13px;
+        font-size: 14px;
+        color: #292d33;
+        outline: none;
+        transition: .2s ease;
+    }
+
+    .input-custom {
+        height: 46px;
+    }
+
+    .textarea-custom {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .input-custom:focus,
+    .textarea-custom:focus {
+        border-color: #ff6b35;
+        box-shadow: 0 0 0 3px rgba(255, 107, 53, .10);
+    }
+
+    .input-custom::placeholder,
+    .textarea-custom::placeholder {
+        color: #a2a7ae;
+    }
+
+    .validation-message {
+        display: block;
+        color: #dc3545;
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    /* ================= CHARACTER COUNT ================= */
+
+    .description-wrapper {
+        position: relative;
+    }
+
+    .character-count {
+        text-align: right;
+        margin-top: 5px;
+        color: #969ba2;
+        font-size: 11px;
+    }
+
+    /* ================= INFORMATION BOX ================= */
+
+    .category-tip {
+        margin-top: 22px;
+        background: #f8f9fa;
+        border: 1px solid #e7e9ec;
+        border-radius: 10px;
+        padding: 15px;
+        display: flex;
+        gap: 11px;
+    }
+
+    .tip-icon {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        border-radius: 8px;
+        background: #fff0e9;
+        color: #ff6b35;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .tip-content strong {
+        display: block;
+        font-size: 12px;
+        color: #34383e;
+        margin-bottom: 4px;
+    }
+
+    .tip-content span {
+        color: #777d85;
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    /* ================= ACTIONS ================= */
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        padding: 19px 24px;
+        border-top: 1px solid #edf0f2;
+        background: #fcfcfd;
+    }
+
+    .action-button {
+        min-width: 125px;
+        height: 43px;
+        padding: 0 17px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 650;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .cancel-button {
+        background: #fff;
+        border: 1px solid #dfe3e7;
+        color: #4d535b;
+    }
+
+    .cancel-button:hover {
+        background: #f2f3f5;
+        color: #30343a;
+    }
+
+    .save-button {
+        background: #ff6b35;
+        border: 1px solid #ff6b35;
+        color: #fff;
+    }
+
+    .save-button:hover {
+        background: #e85a28;
+        border-color: #e85a28;
+    }
+
+    /* ================= RESPONSIVE ================= */
+
+    @@media (max-width: 650px) {
+
+        .category-create-page {
+            padding: 18px;
+        }
+
+        .create-header h1 {
+            font-size: 23px;
+        }
+
+        .form-actions {
+            flex-direction: column-reverse;
+        }
+
+        .action-button {
+            width: 100%;
+        }
+    }
+</style>
+
+
+<div class="category-create-page">
+
+    <div class="category-create-container">
+
+        <!-- =====================================================
+             HEADER
+             ===================================================== -->
+
+        <div class="create-header">
+
+            <a href="/Restaurant/Category/Index"
+               class="back-button"
+               title="Back to Categories">
+
+                ←
+
+            </a>
+
+            <div>
+
+                <h1>
+                    Add Category
+                </h1>
+
+                <p>
+                    Create a category to organize your restaurant menu.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             VALIDATION
+             ===================================================== -->
+
+        <div asp-validation-summary="ModelOnly"
+             class="validation-message mb-3">
+        </div>
+
+
+        <!-- =====================================================
+             CARD
+             ===================================================== -->
+
+        <div class="create-card">
+
+            <div class="card-header">
+
+                <div class="step-number">
+                    1
+                </div>
+
+                <div>
+
+                    <strong>
+                        Category Information
+                    </strong>
+
+                    <span>
+                        Add a clear name and description for this category.
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <form asp-action="Create"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+
+                <div class="card-body">
+
+                    <!-- =========================================
+                         CATEGORY NAME
+                         ========================================= -->
+
+                    <div class="form-group">
+
+                        <label asp-for="Name"
+                               class="form-label-custom">
+
+                            Category Name
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input type="text"
+                               asp-for="Name"
+                               name="Name"
+                               id="Name"
+                               class="input-custom"
+                               maxlength="150"
+                               autocomplete="off"
+                               placeholder="Example: Pizza, Burgers, Drinks" />
+
+                        <span asp-validation-for="Name"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         DESCRIPTION
+                         ========================================= -->
+
+                    <div class="form-group">
+
+                        <label asp-for="Description"
+                               class="form-label-custom">
+
+                            Description
+
+                        </label>
+
+                        <div class="description-wrapper">
+
+                            <textarea asp-for="Description"
+                                      name="Description"
+                                      id="Description"
+                                      class="textarea-custom"
+                                      maxlength="500"
+                                      placeholder="Example: Freshly prepared pizzas made with quality ingredients."></textarea>
+
+                            <div class="character-count">
+
+                                <span id="characterCount">
+                                    0
+                                </span>
+                                / 500
+
+                            </div>
+
+                        </div>
+
+                        <span asp-validation-for="Description"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         TIP
+                         ========================================= -->
+
+                    <div class="category-tip">
+
+                        <div class="tip-icon">
+                            💡
+                        </div>
+
+                        <div class="tip-content">
+
+                            <strong>
+                                Category Tip
+                            </strong>
+
+                            <span>
+                                Keep category names short and easy for customers
+                                to understand. For example: Pizza, Burgers,
+                                Starters, Main Course, Desserts and Drinks.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     ACTIONS
+                     ============================================= -->
+
+                <div class="form-actions">
+
+                    <a href="/Restaurant/Category/Index"
+                       class="action-button cancel-button">
+
+                        Cancel
+
+                    </a>
+
+
+                    <button type="submit"
+                            class="action-button save-button">
+
+                        ✓ Save Category
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const description =
+            document.getElementById("categoryDescription");
+
+        const characterCount =
+            document.getElementById("characterCount");
+
+
+        function updateCharacterCount() {
+
+            if (!description || !characterCount) {
+                return;
+            }
+
+            characterCount.textContent =
+                description.value.length;
+
+        }
+
+
+        if (description) {
+
+            description.addEventListener(
+                "input",
+                updateCharacterCount
+            );
+
+            updateCharacterCount();
+
+        }
+
+    </script>
+}
