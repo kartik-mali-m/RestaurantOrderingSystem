@@ -1,6 +1,9 @@
 ﻿@model List<RestaurantOrderingSystem.Models.Menu.Category>
 
 @{
+   
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
+
     ViewData["Title"] = "Categories";
 
     var totalCategories = Model.Count;

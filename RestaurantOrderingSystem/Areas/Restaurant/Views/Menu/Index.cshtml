@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Menu Management";
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
 
     var totalItems = Model.Count;
     var availableItems = Model.Count(x => x.IsAvailable && x.IsActive);

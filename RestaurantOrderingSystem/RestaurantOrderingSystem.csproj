@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\menuitem\" />
     <Folder Include="wwwroot\images\restaurants\" />
   </ItemGroup>
 

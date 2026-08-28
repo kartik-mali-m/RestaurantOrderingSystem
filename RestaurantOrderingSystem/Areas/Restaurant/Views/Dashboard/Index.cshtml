@@ -1,6 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Restaurant Dashboard";
     Layout = null;
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
 }
 
 <!DOCTYPE html>
@@ -14,8 +15,6 @@
     <style>
         :root {
             --bg: #f5f7fb;
-            --sidebar: #111827;
-            --sidebar-hover: #1f2937;
             --card: #ffffff;
             --border: #e5e7eb;
             --primary: #635bff;
@@ -59,119 +58,16 @@
         }
 
         /* =========================
-                   SIDEBAR
-                ========================= */
-
-        .sidebar {
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 245px;
-            background: var(--sidebar);
-            color: #fff;
-            padding: 22px 14px;
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 5px 12px 25px;
-            border-bottom: 1px solid rgba(255,255,255,.08);
-            margin-bottom: 18px;
-        }
-
-        .brand-logo {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #635bff, #8b5cf6);
-            font-size: 21px;
-        }
-
-        .brand h2 {
-            font-size: 16px;
-            font-weight: 750;
-        }
-
-        .brand span {
-            display: block;
-            font-size: 11px;
-            color: #9ca3af;
-            margin-top: 2px;
-        }
-
-        .nav-title {
-            font-size: 10px;
-            font-weight: 700;
-            color: #6b7280;
-            letter-spacing: .9px;
-            margin: 18px 12px 7px;
-            text-transform: uppercase;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            padding: 11px 12px;
-            margin-bottom: 3px;
-            border-radius: 10px;
-            color: #d1d5db;
-            font-size: 13px;
-            transition: .2s;
-        }
-
-            .nav-item:hover {
-                background: var(--sidebar-hover);
-                color: white;
-            }
-
-            .nav-item.active {
-                background: linear-gradient(135deg, #635bff, #756cff);
-                color: white;
-                box-shadow: 0 7px 18px rgba(99,91,255,.25);
-            }
-
-        .nav-icon {
-            width: 20px;
-            text-align: center;
-            font-size: 15px;
-        }
-
-        .nav-badge {
-            margin-left: auto;
-            min-width: 21px;
-            height: 21px;
-            padding: 0 6px;
-            border-radius: 20px;
-            background: #ef4444;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* =========================
-                   MAIN
-                ========================= */
+                           MAIN
+                        ========================= */
 
         .main {
-            margin-left: 245px;
             min-height: 100vh;
         }
 
         /* =========================
-                   TOPBAR
-                ========================= */
+                           TOPBAR
+                        ========================= */
 
         .topbar {
             height: 76px;
@@ -265,16 +161,16 @@
         }
 
         /* =========================
-                   CONTENT
-                ========================= */
+                           CONTENT
+                        ========================= */
 
         .content {
             padding: 26px 30px 40px;
         }
 
         /* =========================
-                   KPI CARDS
-                ========================= */
+                           KPI CARDS
+                        ========================= */
 
         .kpi-grid {
             display: grid;
@@ -369,8 +265,8 @@
         }
 
         /* =========================
-                   QUICK ACTIONS
-                ========================= */
+                           QUICK ACTIONS
+                        ========================= */
 
         .section-label {
             font-size: 13px;
@@ -425,8 +321,8 @@
         }
 
         /* =========================
-                   MAIN GRID
-                ========================= */
+                           MAIN GRID
+                        ========================= */
 
         .main-grid {
             display: grid;
@@ -467,8 +363,8 @@
         }
 
         /* =========================
-                   LIVE ORDERS
-                ========================= */
+                           LIVE ORDERS
+                        ========================= */
 
         .orders-table {
             width: 100%;
@@ -575,8 +471,8 @@
             }
 
         /* =========================
-                   SUMMARY
-                ========================= */
+                           SUMMARY
+                        ========================= */
 
         .summary-body {
             padding: 18px;
@@ -635,8 +531,8 @@
             }
 
         /* =========================
-                   LOWER GRID
-                ========================= */
+                           LOWER GRID
+                        ========================= */
 
         .lower-grid {
             display: grid;
@@ -650,8 +546,8 @@
         }
 
         /* =========================
-                   TABLE STATUS
-                ========================= */
+                           TABLE STATUS
+                        ========================= */
 
         .tables-grid {
             display: grid;
@@ -703,8 +599,8 @@
         }
 
         /* =========================
-                   PAYMENTS
-                ========================= */
+                           PAYMENTS
+                        ========================= */
 
         .payment-row {
             display: flex;
@@ -758,8 +654,8 @@
         }
 
         /* =========================
-                   ALERTS
-                ========================= */
+                           ALERTS
+                        ========================= */
 
         .alert-row {
             display: flex;
@@ -806,8 +702,8 @@
         }
 
         /* =========================
-                   BOTTOM STATS
-                ========================= */
+                           BOTTOM STATS
+                        ========================= */
 
         .bottom-stats {
             margin-top: 18px;
@@ -849,357 +745,78 @@
         }
 
         /* =========================
-                   RESPONSIVE
-                ========================= */
+                           RESPONSIVE
+                        ========================= */
 
-        @@Smedia(max - width: 1300px)
+        @@media (max-width: 1300px) {
 
-        {
-            .kpi-grid
+            .kpi-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
 
-        {
-            grid-template-columns: repeat(3, 1fr);
+            .quick-actions {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .lower-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .bottom-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
-        .quick-actions {
-            grid-template-columns: repeat(3, 1fr);
+        @@media (max-width: 1000px) {
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lower-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .lower-grid {
-            grid-template-columns: 1fr 1fr;
-        }
+        @@media (max-width: 700px) {
 
-        .bottom-stats {
-            grid-template-columns: repeat(3, 1fr);
-        }
+            .topbar {
+                padding: 0 15px;
+            }
 
-        }
+            .date-box,
+            .profile-info {
+                display: none;
+            }
 
-        @@media(max - width: 1000px)
+            .content {
+                padding: 18px 14px;
+            }
 
-        {
-            .sidebar
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        {
-            width: 75px;
-        }
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        .brand h2,
-        .brand span,
-        .nav-title,
-        .nav-item span:not(.nav-icon),
-        .nav-badge {
-            display: none;
-        }
+            .bottom-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
 
-        .brand {
-            justify-content: center;
-            padding-left: 0;
-            padding-right: 0;
-        }
+            .orders-table {
+                min-width: 850px;
+            }
 
-        .nav-item {
-            justify-content: center;
-        }
-
-        .main {
-            margin-left: 75px;
-        }
-
-        .main-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .lower-grid {
-            grid-template-columns: 1fr;
-        }
-
-        }
-
-        @@media(max - width: 700px)
-
-        {
-            .topbar
-
-        {
-            padding: 0 15px;
-        }
-
-        .date-box,
-        .profile-info {
-            display: none;
-        }
-
-        .content {
-            padding: 18px 14px;
-        }
-
-        .kpi-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .quick-actions {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .bottom-stats {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-        .orders-table {
-            min-width: 850px;
-        }
-
-        .card {
-            overflow-x: auto;
-        }
-
+            .card {
+                overflow-x: auto;
+            }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- =========================================================
-         SIDEBAR
-    ========================================================== -->
-
-    <aside class="sidebar">
-
-        <!-- ========================================================= -->
-        <!-- BRAND -->
-        <!-- ========================================================= -->
-
-        <div class="brand">
-            <div class="brand-logo">🍽️</div>
-
-            <div>
-                <h2>@ViewBag.RestaurantName</h2>
-                <span>Restaurant Admin</span>
-            </div>
-        </div>
-
-
-        <!-- ========================================================= -->
-        <!-- MAIN -->
-        <!-- ========================================================= -->
-
-        <div class="nav-title">Main</div>
-
-        <!-- Dashboard -->
-        <a href="/Restaurant/Dashboard/Index"
-           class="nav-item">
-            <span class="nav-icon">▦</span>
-            <span>Dashboard</span>
-        </a>
-
-
-        <!-- Live Orders -->
-        <a href="/Restaurant/Orders/Live"
-           class="nav-item">
-            <span class="nav-icon">🔴</span>
-            <span>Live Orders</span>
-
-            <span class="nav-badge">
-                12
-            </span>
-        </a>
-
-
-        <!-- Today's Orders -->
-        <a href="/Restaurant/Orders/Today"
-           class="nav-item">
-            <span class="nav-icon">📋</span>
-            <span>Today's Orders</span>
-        </a>
-
-
-        <!-- Online Orders -->
-        <a href="/Restaurant/Orders/Online"
-           class="nav-item">
-            <span class="nav-icon">🌐</span>
-            <span>Online Orders</span>
-        </a>
-
-
-        <!-- Table Bookings -->
-        <a href="/Restaurant/TableBookings/Index"
-           class="nav-item">
-            <span class="nav-icon">🪑</span>
-            <span>Table Bookings</span>
-        </a>
-
-
-        <!-- Payments -->
-        <a href="/Restaurant/Payments/Index"
-           class="nav-item">
-            <span class="nav-icon">💳</span>
-            <span>Payments</span>
-        </a>
-
-
-        <!-- Customers -->
-        <a href="/Restaurant/Customers/Index"
-           class="nav-item">
-            <span class="nav-icon">👥</span>
-            <span>Customers</span>
-        </a>
-
-
-        <!-- ========================================================= -->
-        <!-- MANAGEMENT -->
-        <!-- ========================================================= -->
-
-        <div class="nav-title">Management</div>
-
-
-        <!-- Menu Management -->
-        <a href="/Restaurant/Menu/Index"
-           class="nav-item">
-
-            <span class="nav-icon">🍴</span>
-            <span>Menu Management</span>
-
-        </a>
-
-
-        <!-- Categories -->
-        <a href="/Restaurant/Category/Index"
-           class="nav-item">
-
-            <span class="nav-icon">🏷️</span>
-            <span>Categories</span>
-
-        </a>
-
-
-        <!-- Table Management -->
-        <a href="/Restaurant/Table/Index"
-           class="nav-item">
-
-            <span class="nav-icon">🪑</span>
-            <span>Table Management</span>
-
-        </a>
-
-
-        <!-- Inventory -->
-        <a href="/Restaurant/Inventory/Index"
-           class="nav-item">
-
-            <span class="nav-icon">📦</span>
-            <span>Inventory</span>
-
-        </a>
-
-
-        <!-- Offers -->
-        <a href="/Restaurant/Offer/Index"
-           class="nav-item">
-
-            <span class="nav-icon">🎁</span>
-            <span>Offers</span>
-
-        </a>
-
-
-        <!-- QR Code -->
-        <a href="/Restaurant/QRCode/Index"
-           class="nav-item">
-
-            <span class="nav-icon">▣</span>
-            <span>QR Code</span>
-
-        </a>
-
-
-        <!-- ========================================================= -->
-        <!-- REPORTS -->
-        <!-- ========================================================= -->
-
-        <div class="nav-title">Reports</div>
-
-
-        <!-- Sales Report -->
-        <a href="/Restaurant/Reports/Sales"
-           class="nav-item">
-
-            <span class="nav-icon">📊</span>
-            <span>Sales Report</span>
-
-        </a>
-
-
-        <!-- Orders Report -->
-        <a href="/Restaurant/Reports/Orders"
-           class="nav-item">
-
-            <span class="nav-icon">📈</span>
-            <span>Orders Report</span>
-
-        </a>
-
-
-        <!-- Customer Report -->
-        <a href="/Restaurant/Reports/Customers"
-           class="nav-item">
-
-            <span class="nav-icon">👥</span>
-            <span>Customer Report</span>
-
-        </a>
-
-
-        <!-- ========================================================= -->
-        <!-- SETTINGS -->
-        <!-- ========================================================= -->
-
-        <div class="nav-title">Settings</div>
-
-
-        <!-- Restaurant Profile -->
-        <a href="/Restaurant/Profile/Index"
-           class="nav-item">
-
-            <span class="nav-icon">🏪</span>
-            <span>Restaurant Profile</span>
-
-        </a>
-
-
-        <!-- Settings -->
-        <a href="/Restaurant/Settings/Index"
-           class="nav-item">
-
-            <span class="nav-icon">⚙️</span>
-            <span>Settings</span>
-
-        </a>
-
-
-        <!-- ========================================================= -->
-        <!-- LOGOUT -->
-        <!-- ========================================================= -->
-
-        <form action="/Auth/Logout"
-              method="post"
-              style="margin-top:4px;">
-
-            @Html.AntiForgeryToken()
-
-            <button type="submit"
-                    class="nav-item"
-                    style="width:100%; border:0; background:transparent; cursor:pointer;">
-
-                <span class="nav-icon">↪</span>
-                <span>Logout</span>
-
-            </button>
-
-        </form>
-
-    </aside>
-
 
     <!-- =========================================================
          MAIN

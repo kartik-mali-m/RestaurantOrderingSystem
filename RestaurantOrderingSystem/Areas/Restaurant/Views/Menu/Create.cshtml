@@ -2,12 +2,13 @@
 
 @{
     ViewData["Title"] = "Add Menu Item";
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
 }
 
 <style>
     /* =========================================================
-           PAGE
-           ========================================================= */
+               PAGE
+               ========================================================= */
 
     .menu-create-page {
         min-height: calc(100vh - 70px);
@@ -21,8 +22,8 @@
     }
 
     /* =========================================================
-           HEADER
-           ========================================================= */
+               HEADER
+               ========================================================= */
 
     .create-header {
         display: flex;
@@ -73,8 +74,8 @@
     }
 
     /* =========================================================
-           MAIN GRID
-           ========================================================= */
+               MAIN GRID
+               ========================================================= */
 
     .create-grid {
         display: grid;
@@ -84,8 +85,8 @@
     }
 
     /* =========================================================
-           CARDS
-           ========================================================= */
+               CARDS
+               ========================================================= */
 
     .create-card {
         background: #ffffff;
@@ -118,8 +119,8 @@
     }
 
     /* =========================================================
-           STEP LABEL
-           ========================================================= */
+               STEP LABEL
+               ========================================================= */
 
     .section-title {
         display: flex;
@@ -147,8 +148,8 @@
     }
 
     /* =========================================================
-           FORM
-           ========================================================= */
+               FORM
+               ========================================================= */
 
     .form-group {
         margin-bottom: 19px;
@@ -218,8 +219,8 @@
     }
 
     /* =========================================================
-           TWO COLUMN FORM
-           ========================================================= */
+               TWO COLUMN FORM
+               ========================================================= */
 
     .form-row {
         display: grid;
@@ -228,8 +229,8 @@
     }
 
     /* =========================================================
-           PRICE
-           ========================================================= */
+               PRICE
+               ========================================================= */
 
     .price-wrapper {
         position: relative;
@@ -250,8 +251,8 @@
     }
 
     /* =========================================================
-           AVAILABILITY
-           ========================================================= */
+               AVAILABILITY
+               ========================================================= */
 
     .availability-box {
         border: 1px solid #e0e3e7;
@@ -301,8 +302,8 @@
     }
 
     /* =========================================================
-           SWITCH
-           ========================================================= */
+               SWITCH
+               ========================================================= */
 
     .switch {
         position: relative;
@@ -347,8 +348,8 @@
         }
 
     /* =========================================================
-           IMAGE UPLOAD
-           ========================================================= */
+               IMAGE UPLOAD
+               ========================================================= */
 
     .image-upload {
         position: relative;
@@ -423,8 +424,8 @@
     }
 
     /* =========================================================
-           IMAGE PREVIEW
-           ========================================================= */
+               IMAGE PREVIEW
+               ========================================================= */
 
     .image-preview {
         position: absolute;
@@ -454,8 +455,8 @@
     }
 
     /* =========================================================
-           SIDE INFORMATION
-           ========================================================= */
+               SIDE INFORMATION
+               ========================================================= */
 
     .info-box {
         background: #f8f9fa;
@@ -506,8 +507,8 @@
     }
 
     /* =========================================================
-           BOTTOM ACTIONS
-           ========================================================= */
+               BOTTOM ACTIONS
+               ========================================================= */
 
     .form-actions {
         display: flex;
@@ -557,8 +558,8 @@
         }
 
     /* =========================================================
-           RESPONSIVE
-           ========================================================= */
+               RESPONSIVE
+               ========================================================= */
 
     @@media (max-width: 900px) {
 
@@ -740,7 +741,7 @@
                                        name="Name"
                                        class="input-custom"
                                        placeholder="Example: Margherita Pizza"
-                                       autocomplete="off" />                    
+                                       autocomplete="off" />
 
                                 <span asp-validation-for="Name"
                                       class="validation-message">
@@ -748,34 +749,6 @@
 
                             </div>
 
-
-                            <!-- CATEGORY -->
-
-                            @* <div class="form-group">
-
-                                <label asp-for="CategoryId"
-                                       class="form-label-custom">
-
-                                    Category
-                                    <span class="required">*</span>
-
-                                </label>
-
-                                <select asp-for="CategoryId"
-                                        asp-items="ViewBag.Categories"
-                                        class="select-custom">
-
-                                    <option value="">
-                                        Select a category
-                                    </option>
-
-                                </select>
-
-                                <span asp-validation-for="CategoryId"
-                                      class="validation-message">
-                                </span>
-
-                            </div> *@
 
                             <!-- CATEGORY -->
 
@@ -813,18 +786,18 @@
 
                             <div class="form-group">
 
-                                <label asp-for="Description"
+                                <label for="Description"
                                        class="form-label-custom">
 
                                     Description
 
                                 </label>
 
-                                <textarea asp-for="Description"
+                                <textarea id="Description"
+                                          name="Description"
                                           class="textarea-custom"
                                           maxlength="500"
-                                          placeholder="Example: Fresh mozzarella, tomato sauce and basil.">
-                                </textarea>
+                                          placeholder="Example: Fresh mozzarella, tomato sauce and basil.">@Model.Description</textarea>
 
                                 <span asp-validation-for="Description"
                                       class="validation-message">
@@ -939,8 +912,11 @@
 
                                         <div class="switch">
 
-                                            <input asp-for="IsAvailable"
-                                                   type="checkbox" />
+                                            <input type="checkbox"
+                                                   id="IsAvailable"
+                                                   name="IsAvailable"
+                                                   value="true"
+                                                   checked="@Model.IsAvailable" />
 
                                             <span class="slider"></span>
 
@@ -994,9 +970,9 @@
                                    class="image-upload"
                                    id="imageUpload">
 
-                                <input asp-for="Image"
+                                <input type="file"
                                        id="imageInput"
-                                       type="file"
+                                       name="Image"
                                        accept=".jpg,.jpeg,.png,.webp" />
 
 
