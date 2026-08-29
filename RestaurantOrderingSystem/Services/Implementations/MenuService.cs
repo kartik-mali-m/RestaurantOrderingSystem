@@ -616,6 +616,63 @@ namespace RestaurantOrderingSystem.Services.Implementations
                 // Do not stop database update
                 // if old image deletion fails
             }
+
+
+        }
+
+
+        // =====================================================
+        // ACTIVATE MENU ITEM
+        // =====================================================
+
+        public async Task<bool> ActivateMenuItemAsync(
+            int restaurantId,
+            int menuItemId)
+        {
+            var menuItem =
+                await _menuItemRepository.GetByIdAsync(
+                    menuItemId,
+                    restaurantId);
+
+            if (menuItem == null)
+            {
+                return false;
+            }
+
+            menuItem.IsActive = true;
+
+            await _menuItemRepository.UpdateAsync(menuItem);
+
+            await _menuItemRepository.SaveChangesAsync();
+
+            return true;
+        }
+        // =====================================================
+        // UPDATE PRICE ONLY
+        // =====================================================
+
+        public async Task<bool> UpdatePriceAsync(
+            int restaurantId,
+            int menuItemId,
+            decimal price)
+        {
+            var menuItem =
+                await _menuItemRepository.GetByIdAsync(
+                    menuItemId,
+                    restaurantId);
+
+            if (menuItem == null)
+            {
+                return false;
+            }
+
+            menuItem.Price = price;
+
+            await _menuItemRepository.UpdateAsync(menuItem);
+
+            await _menuItemRepository.SaveChangesAsync();
+
+            return true;
         }
     }
 }

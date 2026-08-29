@@ -51,8 +51,14 @@ namespace RestaurantOrderingSystem.Services.Interfaces
                 int restaurantId,
                 MenuItemVM model);
 
+
+
         Task<bool> DeleteMenuItemAsync(
             int restaurantId,
             int menuItemId);
+        Task<bool> ActivateMenuItemAsync(int restaurantId, int menuItemId);
+
+
+        Task<bool> UpdatePriceAsync(int restaurantId, int menuItemId, decimal price);
     }
 }

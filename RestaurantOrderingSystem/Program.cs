@@ -36,6 +36,8 @@ builder.Services.AddScoped<IMenuService, MenuService>();
 
 
 
+
+
 // JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -76,6 +78,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 var app = builder.Build();
+
 
 // Seed database
 using (var scope = app.Services.CreateScope())

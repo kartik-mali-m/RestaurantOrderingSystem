@@ -791,14 +791,15 @@
 
                             <div class="category-actions">
 
-                                <a asp-action="Edit"
-                                   asp-route-id="@category.Id"
-                                   class="action-button edit-action">
+                                <a href="/Restaurant/category/Edit/@category.Id"
+                                   class="small-btn small-btn-edit"
+                                   style="text-decoration:none;">
 
                                     ✏️ Edit
 
                                 </a>
 
+                            
 
                                 @if (category.IsActive)
                                 {

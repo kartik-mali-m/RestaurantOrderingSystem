@@ -223,6 +223,7 @@ namespace RestaurantOrderingSystem.Areas.Restaurant.Controllers
         // =====================================================
 
         [HttpPost]
+        [Route("Restaurant/Menu/Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
@@ -248,6 +249,38 @@ namespace RestaurantOrderingSystem.Areas.Restaurant.Controllers
 
             return RedirectToAction(
                 nameof(Index));
+        }
+
+        // =====================================================
+        // ACTIVATE
+        // =====================================================
+
+        [HttpPost]
+        [Route("Restaurant/Menu/Activate")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Activate(int id)
+        {
+            var restaurantId = GetRestaurantId();
+
+            if (restaurantId == null)
+            {
+                return Unauthorized();
+            }
+
+            var result =
+                await _menuService.ActivateMenuItemAsync(
+                    restaurantId.Value,
+                    id);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] =
+                "Menu item activated successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
 
         // =====================================================
@@ -294,6 +327,44 @@ namespace RestaurantOrderingSystem.Areas.Restaurant.Controllers
             }
 
             return null;
+        }
+
+        // =====================================================
+        // UPDATE PRICE
+        // =====================================================
+
+        [HttpPost]
+        [Route("Restaurant/Menu/UpdatePrice")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdatePrice(int id, decimal price)
+        {
+            var restaurantId = GetRestaurantId();
+
+            if (restaurantId == null)
+            {
+                return Unauthorized();
+            }
+
+            if (price <= 0)
+            {
+                TempData["SuccessMessage"] = "Price must be greater than 0.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var result =
+                await _menuService.UpdatePriceAsync(
+                    restaurantId.Value,
+                    id,
+                    price);
+
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            TempData["SuccessMessage"] = "Price updated successfully.";
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
