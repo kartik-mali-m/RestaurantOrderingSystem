@@ -27,6 +27,8 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 
 // ==============================
 // Services
@@ -38,6 +40,10 @@ builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
 builder.Services.AddScoped<IQRCodeService, QRCodeService>();
 builder.Services.AddScoped<ICartService, CartService>();
+
+
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
 
 // ==============================
 // Session

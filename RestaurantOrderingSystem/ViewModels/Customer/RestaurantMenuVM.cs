@@ -28,6 +28,21 @@
             = new List<PublicMenuItemVM>();
     }
 
+    //public class PublicMenuItemVM
+    //{
+    //    public int MenuItemId { get; set; }
+
+    //    public string Name { get; set; } = string.Empty;
+
+    //    public string? Description { get; set; }
+
+    //    public decimal Price { get; set; }
+
+    //    public string? ImagePath { get; set; }
+
+    //    public bool IsAvailable { get; set; }
+    //}
+
     public class PublicMenuItemVM
     {
         public int MenuItemId { get; set; }
@@ -36,10 +51,34 @@
 
         public string? Description { get; set; }
 
+        // Original menu price
         public decimal Price { get; set; }
+
+        // Final price after Offer OR Discount
+        public decimal FinalPrice { get; set; }
 
         public string? ImagePath { get; set; }
 
         public bool IsAvailable { get; set; }
+
+        // ============================
+        // OFFER
+        // ============================
+
+        public bool HasOffer { get; set; }
+
+        public string? OfferName { get; set; }
+
+        public decimal OfferPercentage { get; set; }
+
+        // ============================
+        // DISCOUNT
+        // ============================
+
+        public bool HasDiscount { get; set; }
+
+        public string? DiscountName { get; set; }
+
+        public decimal DiscountPercentage { get; set; }
     }
 }

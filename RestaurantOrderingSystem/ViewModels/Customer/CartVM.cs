@@ -21,11 +21,25 @@
 
         public string? ImagePath { get; set; }
 
+        // Original menu price
+        public decimal OriginalPrice { get; set; }
+
+        // Final price after Offer / Discount
         public decimal Price { get; set; }
 
         public int Quantity { get; set; } = 1;
 
         public decimal TotalPrice =>
             Price * Quantity;
+
+        // Promotion information
+        public string? PromotionName { get; set; }
+
+        public string? PromotionType { get; set; }
+
+        public decimal DiscountPercentage { get; set; }
+
+        public bool HasPromotion =>
+            !string.IsNullOrEmpty(PromotionType);
     }
 }
