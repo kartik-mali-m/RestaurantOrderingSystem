@@ -246,6 +246,7 @@ namespace RestaurantOrderingSystem.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Remove(int menuItemId)
         {
+
             _cartService.RemoveFromCart(menuItemId);
 
             return RedirectToAction(nameof(Index));

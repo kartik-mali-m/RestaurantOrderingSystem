@@ -339,11 +339,19 @@
             box-shadow: 0 1px 3px rgba(0,0,0,.2);
         }
 
-    .switch input:checked + .slider {
+    /* .switch input:checked + .slider {
         background: #22a06b;
     }
 
         .switch input:checked + .slider:before {
+            transform: translateX(21px);
+        } */
+
+    .switch input:checked ~ .slider {
+        background: #22a06b;
+    }
+
+        .switch input:checked ~ .slider:before {
             transform: translateX(21px);
         }
 
@@ -913,19 +921,8 @@
 
                                         <div class="switch">
 
-                                            @* <input type="checkbox"
-                                                   id="IsAvailable"
-                                                   name="IsAvailable"
-                                                   value="true"
-                                                   checked="@Model.IsAvailable" /> *@
-
-                                            <!-- AVAILABILITY -->
+                                            <input type="checkbox" id="IsAvailable" name="IsAvailable" value="true" checked="@Model.IsAvailable" />
                                             <input type="hidden" name="IsAvailable" value="false" />
-                                            <input type="checkbox"
-                                                   id="IsAvailable"
-                                                   name="IsAvailable"
-                                                   value="true"
-                                                   checked="@Model.IsAvailable" />
 
                                             <span class="slider"></span>
 
