@@ -1,49 +1,332 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var restaurantId = ViewContext.RouteData.Values["restaurantId"]?.ToString();
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RestaurantOrderingSystem</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RestaurantOrderingSystem.styles.css" asp-append-version="true" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RestaurantOrderingSystem</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <title>@ViewData["Title"] - Restaurant Ordering</title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
+
+    <style>
+
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        .main-content {
+            min-height: calc(100vh - 140px);
+        }
+
+        .navbar {
+            padding: 12px 0;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            margin: 0 5px;
+        }
+
+        /* Cart icon that stays visible outside the collapsed menu on mobile */
+        .cart-link {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: #fff;
+            text-decoration: none;
+        }
+
+            .cart-link:hover,
+            .cart-link:focus {
+                color: #fff;
+                background: rgba(255,255,255,0.1);
+            }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 10px;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Desktop: show the labelled cart button inside the nav list, hide the icon-only one */
+        .cart-link-mobile {
+            display: none;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding: 25px 0;
+            background: #ffffff;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer-title {
+            font-weight: 600;
+        }
+
+        @@media (max-width: 991px) {
+
+            .navbar-nav {
+                padding-top: 15px;
+            }
+
+            .nav-item {
+                margin-bottom: 8px;
+            }
+            /* Show the always-visible icon cart link next to the toggler */
+            .cart-link-mobile {
+                display: inline-flex;
+            }
+            /* Hide the full labelled cart button that lives inside the collapse,
+                       since the icon version already covers it on mobile */
+            .cart-link-desktop {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+
         <div class="container">
-            &copy; 2026 - RestaurantOrderingSystem - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+
+            <!-- Brand -->
+            <a class="navbar-brand"
+               href="#">
+                🍽️ Restaurant Ordering
+            </a>
+
+
+            <!-- Mobile-only: always-visible cart icon + toggler, grouped together -->
+            <div class="d-flex align-items-center order-lg-2">
+
+                <a class="cart-link cart-link-mobile"
+                   asp-controller="Cart"
+                   asp-action="Index"
+                   aria-label="My Cart">
+
+                    🛒
+
+                    @* Uncomment and bind to your cart count when available
+                    <span class="cart-badge bg-danger text-white">@Model.CartItemCount</span>
+                    *@
+
+                </a>
+
+                <!-- Mobile Toggle -->
+                <button class="navbar-toggler ms-2"
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#navbarContent"
+                        aria-controls="navbarContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                    <span class="navbar-toggler-icon"></span>
+
+                </button>
+
+            </div>
+
+
+            <!-- Navigation -->
+            <div class="collapse navbar-collapse"
+                 id="navbarContent">
+
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+
+
+                    <!-- Restaurant Menu -->
+                    @if (!string.IsNullOrEmpty(restaurantId))
+                    {
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               asp-controller="Menu"
+                               asp-action="Restaurant"
+                               asp-route-restaurantId="@restaurantId">
+
+                                🍽️ Menu
+
+                            </a>
+
+                        </li>
+                    }
+
+
+                    <!-- Cart (labelled button, desktop only — mobile uses the icon next to the toggler) -->
+                    <li class="nav-item ms-lg-2 cart-link-desktop">
+
+                        <a class="btn btn-outline-light"
+                           asp-controller="Cart"
+                           asp-action="Index">
+
+                            🛒 My Cart
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- Future Order Tracking -->
+                    <li class="nav-item ms-lg-2">
+
+                        <a class="nav-link"
+                           href="#">
+
+                            📋 My Orders
+
+                        </a>
+
+                    </li>
+
+
+                </ul>
+
+            </div>
+
         </div>
+
+    </nav>
+
+
+    <!-- ================= MAIN CONTENT ================= -->
+
+    <main class="main-content">
+
+        @RenderBody()
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <div class="row text-center text-md-start">
+
+                <!-- About -->
+                <div class="col-md-6 mb-3">
+
+                    <h6 class="footer-title">
+                        🍽️ Restaurant Ordering
+                    </h6>
+
+                    <p class="text-muted mb-0">
+
+                        Scan the QR code, explore the menu,
+                        and place your order easily.
+
+                    </p>
+
+                </div>
+
+
+                <!-- Quick Links -->
+                <div class="col-md-3 mb-3">
+
+                    <h6 class="footer-title">
+                        Quick Links
+                    </h6>
+
+                    <div>
+
+                        <a asp-controller="Cart"
+                           asp-action="Index"
+                           class="text-decoration-none text-muted">
+
+                            🛒 My Cart
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Help -->
+                <div class="col-md-3 mb-3">
+
+                    <h6 class="footer-title">
+                        Help
+                    </h6>
+
+                    <p class="text-muted mb-0">
+
+                        Contact restaurant staff for assistance.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <hr />
+
+
+            <div class="text-center text-muted">
+
+                <small>
+
+                    © @DateTime.Now.Year Restaurant Ordering System.
+                    All Rights Reserved.
+
+                </small>
+
+            </div>
+
+        </div>
+
     </footer>
+
+
+    <!-- ================= SCRIPTS ================= -->
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
+
 </html>

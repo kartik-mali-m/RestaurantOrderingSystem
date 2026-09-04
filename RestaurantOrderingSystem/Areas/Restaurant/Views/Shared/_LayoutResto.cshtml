@@ -1,0 +1,534 @@
+﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>
+        @ViewData["Title"] - Restaurant Ordering System
+    </title>
+
+    <link rel="stylesheet"
+          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/admin.css"
+          asp-append-version="true" />
+
+</head>
+
+
+<body class="admin-body">
+
+    <div class="admin-wrapper">
+
+
+        <!-- =========================================================
+             RESTAURANT SIDEBAR
+        ========================================================== -->
+
+        <aside class="admin-sidebar">
+
+
+            <!-- =====================================================
+                 BRAND
+            ====================================================== -->
+
+            <div class="brand-section">
+
+                <div class="brand-logo">
+                    <span>🍽️</span>
+                </div>
+
+                <div>
+
+                    <div class="brand-name">
+                        @(ViewBag.RestaurantName ?? "Restaurant")
+                    </div>
+
+                    <div class="brand-subtitle">
+                        Restaurant Admin
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 SIDEBAR SCROLL AREA
+            ====================================================== -->
+
+            <div style="overflow-y:auto; flex:1;">
+
+
+                <!-- ================= MAIN ================= -->
+
+                <div class="sidebar-section-title">
+                    MAIN
+                </div>
+
+
+                <nav class="admin-nav">
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Dashboard"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">▦</span>
+
+                        <span>Dashboard</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Orders"
+                       asp-action="Live"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🔴</span>
+
+                        <span>Live Orders</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Orders"
+                       asp-action="Today"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">📋</span>
+
+                        <span>Today's Orders</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Orders"
+                       asp-action="Online"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🌐</span>
+
+                        <span>Online Orders</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="TableBookings"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🪑</span>
+
+                        <span>Table Bookings</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Payments"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">💳</span>
+
+                        <span>Payments</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Customers"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">👥</span>
+
+                        <span>Customers</span>
+
+                    </a>
+
+
+                </nav>
+
+
+
+                <!-- ================= MANAGEMENT ================= -->
+
+                <div class="sidebar-section-title">
+                    MANAGEMENT
+                </div>
+
+
+                <nav class="admin-nav">
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Menu"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🍴</span>
+
+                        <span>Menu Management</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Category"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🏷️</span>
+
+                        <span>Categories</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Table"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🪑</span>
+
+                        <span>Table Management</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Inventory"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">📦</span>
+
+                        <span>Inventory</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Offer"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🎁</span>
+
+                        <span>Offers</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="QRCode"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">▣</span>
+
+                        <span>QR Code</span>
+
+                    </a>
+
+
+                </nav>
+
+
+
+                <!-- ================= REPORTS ================= -->
+
+                <div class="sidebar-section-title">
+                    REPORTS
+                </div>
+
+
+                <nav class="admin-nav">
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Reports"
+                       asp-action="Sales"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">📊</span>
+
+                        <span>Sales Report</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Reports"
+                       asp-action="Orders"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">📈</span>
+
+                        <span>Orders Report</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Reports"
+                       asp-action="Customers"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">👥</span>
+
+                        <span>Customer Report</span>
+
+                    </a>
+
+
+                </nav>
+
+
+
+                <!-- ================= SETTINGS ================= -->
+
+                <div class="sidebar-section-title">
+                    SETTINGS
+                </div>
+
+
+                <nav class="admin-nav">
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Profile"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">🏪</span>
+
+                        <span>Restaurant Profile</span>
+
+                    </a>
+
+
+                    <a asp-area="Restaurant"
+                       asp-controller="Settings"
+                       asp-action="Index"
+                       class="admin-nav-item">
+
+                        <span class="nav-icon">⚙️</span>
+
+                        <span>Settings</span>
+
+                    </a>
+
+
+                </nav>
+
+
+            </div>
+
+
+
+            <!-- =====================================================
+                 BOTTOM PROFILE + LOGOUT
+            ====================================================== -->
+
+            <div class="sidebar-bottom">
+
+
+                <div class="admin-profile">
+
+                    <div class="profile-avatar">
+                        RA
+                    </div>
+
+
+                    <div class="profile-info">
+
+                        <div class="profile-name">
+                            @(ViewBag.RestaurantName ?? "Restaurant")
+                        </div>
+
+                        <div class="profile-role">
+                            Restaurant Admin
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <form action="/Auth/Logout"
+                      method="post">
+
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit"
+                            class="logout-button">
+
+                        <span>↪</span>
+
+                        <span>Logout</span>
+
+                    </button>
+
+                </form>
+
+
+            </div>
+
+
+        </aside>
+
+
+
+        <!-- =========================================================
+             MAIN AREA
+        ========================================================== -->
+
+        <main class="admin-main">
+
+
+            <!-- ================= HEADER ================= -->
+
+            <header class="admin-header">
+
+
+                <div class="header-left">
+
+                    <button class="mobile-menu-button"
+                            type="button"
+                            onclick="toggleSidebar()">
+
+                        ☰
+
+                    </button>
+
+
+                    <div>
+
+                        <div class="header-title">
+                            @ViewData["Title"]
+                        </div>
+
+                        <div class="header-date">
+                            Restaurant Administration
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <div class="header-right">
+
+
+                    <div class="header-user">
+
+
+                        <div class="header-avatar">
+                            RA
+                        </div>
+
+
+                        <div class="header-user-info">
+
+                            <div>
+                                @(ViewBag.RestaurantName ?? "Restaurant")
+                            </div>
+
+                            <small>
+                                Restaurant Admin
+                            </small>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </header>
+
+
+
+            <!-- =====================================================
+                 PAGE CONTENT
+                 THIS IS THE IMPORTANT PART
+            ====================================================== -->
+
+            <section class="admin-content">
+
+                @RenderBody()
+
+            </section>
+
+
+
+            <!-- ================= FOOTER ================= -->
+
+            <footer class="admin-footer">
+
+                <span>
+                    © @DateTime.Now.Year Restaurant Ordering System
+                </span>
+
+                <span>
+                    Restaurant Admin Panel
+                </span>
+
+            </footer>
+
+
+        </main>
+
+
+    </div>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <script>
+
+        function toggleSidebar() {
+
+            document
+                .querySelector(".admin-sidebar")
+                .classList.toggle("sidebar-open");
+
+        }
+
+    </script>
+
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+
+</body>
+
+</html>

@@ -18,10 +18,13 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="QRCoder" Version="1.8.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\images\menuitem\" />
     <Folder Include="wwwroot\images\restaurants\" />
+    <Folder Include="wwwroot\uploads\qrcodes\" />
   </ItemGroup>
 
 </Project>

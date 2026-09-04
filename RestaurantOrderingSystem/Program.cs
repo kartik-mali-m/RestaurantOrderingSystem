@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RestaurantOrderingSystem.Data;
@@ -11,7 +11,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Add services to the container
 builder.Services.AddControllersWithViews();
 
 // Entity Framework Core
@@ -19,24 +19,51 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// ==============================
 // Repositories
+// ==============================
+
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+builder.Services.AddScoped<IOfferRepository, OfferRepository>();
+builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 
+// ==============================
 // Services
+// ==============================
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRestaurantService, RestaurantService>();
-
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
-
 builder.Services.AddScoped<IMenuService, MenuService>();
+builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+builder.Services.AddScoped<ICartService, CartService>();
 
 
+builder.Services.AddScoped<IOfferService, OfferService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
 
+// ==============================
+// Session
+// ==============================
+
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(1);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// ==============================
 // JWT Authentication
+// ==============================
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -58,7 +85,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(key))
         };
 
-        // <-- ADD THIS BLOCK RIGHT HERE -->
         options.Events = new JwtBearerEvents
         {
             OnMessageReceived = context =>
@@ -77,7 +103,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
-// Seed database
+// ==============================
+// Seed Database
+// ==============================
+
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider
@@ -87,7 +116,10 @@ using (var scope = app.Services.CreateScope())
     await AdminSeeder.SeedAsync(context);
 }
 
-// Configure the HTTP request pipeline.
+// ==============================
+// Configure HTTP Pipeline
+// ==============================
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -100,10 +132,17 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// JWT Authentication MUST come before Authorization
+// ⭐ SESSION MUST BE HERE
+app.UseSession();
+
+// Authentication
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+// ==============================
+// Routes
+// ==============================
 
 // Area route
 app.MapControllerRoute(
@@ -116,3 +155,158 @@ app.MapControllerRoute(
     pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//using Microsoft.AspNetCore.Authentication.JwtBearer;
+//using Microsoft.EntityFrameworkCore;
+//using Microsoft.IdentityModel.Tokens;
+//using RestaurantOrderingSystem.Data;
+//using RestaurantOrderingSystem.Data.Seed;
+//using RestaurantOrderingSystem.Repositories.Implementations;
+//using RestaurantOrderingSystem.Repositories.Interfaces;
+//using RestaurantOrderingSystem.Services.Implementations;
+//using RestaurantOrderingSystem.Services.Interfaces;
+//using System.Text;
+
+//var builder = WebApplication.CreateBuilder(args);
+
+//// Add services to the container.
+//builder.Services.AddControllersWithViews();
+
+//// Entity Framework Core
+//builder.Services.AddDbContext<ApplicationDbContext>(options =>
+//    options.UseSqlServer(
+//        builder.Configuration.GetConnectionString("DefaultConnection")));
+
+//// Repositories
+//builder.Services.AddScoped<IUserRepository, UserRepository>();
+//builder.Services.AddScoped<IRestaurantRepository, RestaurantRepository>();
+
+//// Services
+//builder.Services.AddScoped<IAuthService, AuthService>();
+//builder.Services.AddScoped<IJwtService, JwtService>();
+//builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+
+//builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+//builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
+
+//builder.Services.AddScoped<IMenuService, MenuService>();
+
+//builder.Services.AddScoped<IQRCodeService, QRCodeService>();
+
+//builder.Services.AddScoped<ICartService, CartService>();
+
+//// JWT Authentication
+//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        var key = builder.Configuration["JwtSettings:Key"]
+//                  ?? throw new InvalidOperationException(
+//                      "JWT Key is not configured.");
+
+//        options.TokenValidationParameters = new TokenValidationParameters
+//        {
+//            ValidateIssuer = true,
+//            ValidateAudience = true,
+//            ValidateLifetime = true,
+//            ValidateIssuerSigningKey = true,
+
+//            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+//            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+
+//            IssuerSigningKey = new SymmetricSecurityKey(
+//                Encoding.UTF8.GetBytes(key))
+//        };
+
+//        // <-- ADD THIS BLOCK RIGHT HERE -->
+//        options.Events = new JwtBearerEvents
+//        {
+//            OnMessageReceived = context =>
+//            {
+//                var token = context.Request.Cookies["AuthToken"];
+
+//                if (!string.IsNullOrEmpty(token))
+//                {
+//                    context.Token = token;
+//                }
+
+//                return Task.CompletedTask;
+//            }
+//        };
+//    });
+
+//builder.Services.AddDistributedMemoryCache();
+
+//builder.Services.AddHttpContextAccessor();
+
+//builder.Services.AddSession(options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromHours(1);
+//    options.Cookie.HttpOnly = true;
+//    options.Cookie.IsEssential = true;
+//});
+
+//var app = builder.Build();
+
+
+//// Seed database
+//using (var scope = app.Services.CreateScope())
+//{
+//    var context = scope.ServiceProvider
+//        .GetRequiredService<ApplicationDbContext>();
+
+//    await RoleSeeder.SeedAsync(context);
+//    await AdminSeeder.SeedAsync(context);
+//}
+
+//// Configure the HTTP request pipeline.
+//if (!app.Environment.IsDevelopment())
+//{
+//    app.UseExceptionHandler("/Home/Error");
+//    app.UseHsts();
+//}
+
+//app.UseHttpsRedirection();
+
+//app.UseStaticFiles();
+
+//app.UseRouting();
+
+//// JWT Authentication MUST come before Authorization
+//app.UseAuthentication();
+
+//app.UseAuthorization();
+
+//// Area route
+//app.MapControllerRoute(
+//    name: "areas",
+//    pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}");
+
+//// Default route
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Auth}/{action=Login}/{id?}");
+
+//app.Run();
+
+
+
+

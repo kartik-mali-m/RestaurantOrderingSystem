@@ -2,15 +2,23 @@
 
 @{
     ViewData["Title"] = "Menu Management";
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
 
     var totalItems = Model.Count;
     var availableItems = Model.Count(x => x.IsAvailable && x.IsActive);
-    var unavailableItems = Model.Count(x => !x.IsAvailable && x.IsActive);
+    var unavailableItems = Model.Count(x => !x.IsAvailable || !x.IsActive);
     var activeCategories = Model
         .Where(x => x.Category != null && x.IsActive)
         .Select(x => x.Category!.Name)
         .Distinct()
         .Count();
+
+    var categoryNames = Model
+        .Where(x => x.Category != null)
+        .Select(x => x.Category!.Name)
+        .Distinct()
+        .OrderBy(x => x)
+        .ToList();
 }
 
 <style>
@@ -56,6 +64,8 @@
         align-items: center;
         gap: 7px;
         transition: 0.2s ease;
+        border: none;
+        cursor: pointer;
     }
 
     .menu-btn-secondary {
@@ -183,141 +193,325 @@
             border-color: #202124;
         }
 
-    /* ================= GRID ================= */
-
-    .menu-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 20px;
-    }
-
-    .menu-card {
+    .category-select {
+        height: 42px;
+        border: 1px solid #dfe2e7;
+        border-radius: 8px;
+        padding: 0 12px;
+        font-size: 13px;
+        color: #30343b;
         background: #ffffff;
-        border: 1px solid #e5e7eb;
-        border-radius: 14px;
-        overflow: hidden;
-        transition: 0.2s ease;
+        cursor: pointer;
+        outline: none;
+        min-width: 180px;
     }
 
-        .menu-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+        .category-select:focus {
+            border-color: #ff6b35;
         }
 
-    .menu-image-wrapper {
-        position: relative;
-        height: 205px;
-        background: #f0f1f3;
+    /* ================= LIST TABLE ================= */
+
+    .menu-table-card {
+        background: #ffffff;
+        border: 1px solid #e7e9ed;
+        border-radius: 14px;
         overflow: hidden;
     }
 
-    .menu-image {
+    .menu-table {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        border-collapse: collapse;
     }
 
-    .no-image {
-        height: 100%;
+        .menu-table thead th {
+            background: #fafbfc;
+            color: #767c85;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding: 13px 16px;
+            border-bottom: 1px solid #e7e9ed;
+            white-space: nowrap;
+        }
+
+        .menu-table tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #f1f2f4;
+            font-size: 13px;
+            color: #30343b;
+            vertical-align: middle;
+        }
+
+        .menu-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .menu-table tbody tr:hover {
+            background: #fafbfc;
+        }
+
+    .row-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .row-thumb {
+        width: 48px;
+        height: 48px;
+        border-radius: 9px;
+        object-fit: cover;
+        background: #f0f1f3;
+        flex-shrink: 0;
+    }
+
+    .row-thumb-empty {
+        width: 48px;
+        height: 48px;
+        border-radius: 9px;
+        background: #f0f1f3;
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #969ba3;
-        font-size: 14px;
+        font-size: 18px;
+        flex-shrink: 0;
+        color: #b2b7bd;
     }
 
-    .availability-badge {
-        position: absolute;
-        top: 12px;
-        right: 12px;
-        padding: 6px 10px;
+    .row-name {
+        font-weight: 650;
+        color: #202124;
+    }
+
+    .row-desc {
+        font-size: 11px;
+        color: #8a9098;
+        max-width: 260px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .category-pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: #fff1ea;
+        color: #ff6b35;
+        font-size: 11px;
+        font-weight: 650;
+    }
+
+    .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 10px;
         border-radius: 20px;
         font-size: 11px;
-        font-weight: 600;
+        font-weight: 650;
     }
 
-    .available {
+    .status-available {
         background: #e8f7ee;
         color: #198754;
     }
 
-    .unavailable {
+    .status-unavailable {
         background: #fdecec;
         color: #dc3545;
     }
 
-    .menu-card-body {
-        padding: 17px;
-    }
-
-    .menu-category {
-        font-size: 12px;
-        font-weight: 600;
-        color: #ff6b35;
-        text-transform: uppercase;
-        letter-spacing: 0.4px;
-        margin-bottom: 6px;
-    }
-
-    .menu-item-name {
-        font-size: 18px;
+    .row-price {
         font-weight: 700;
         color: #202124;
-        margin-bottom: 7px;
     }
 
-    .menu-description {
-        color: #747a83;
-        font-size: 13px;
-        line-height: 1.5;
-        height: 40px;
-        overflow: hidden;
-        margin-bottom: 13px;
-    }
+    /* ================= INLINE PRICE EDIT ================= */
 
-    .menu-bottom {
+    .price-view {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        border-top: 1px solid #f0f1f3;
-        padding-top: 13px;
+        gap: 8px;
     }
 
-    .menu-price {
-        font-size: 19px;
-        font-weight: 700;
-        color: #202124;
+    .price-edit-btn {
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-size: 12px;
+        opacity: 0.6;
+        padding: 2px;
     }
 
-    .menu-actions-small {
-        display: flex;
-        gap: 7px;
+        .price-edit-btn:hover {
+            opacity: 1;
+        }
+
+    .price-edit-form {
+        display: none;
+        align-items: center;
+        gap: 5px;
     }
 
-    .small-btn {
+        .price-edit-form.open {
+            display: flex;
+        }
+
+    .price-symbol-inline {
+        font-size: 13px;
+        color: #6d737b;
+        font-weight: 600;
+    }
+
+    .price-input-inline {
+        width: 85px;
+        height: 32px;
+        border: 1px solid #dfe2e7;
+        border-radius: 7px;
+        padding: 0 8px;
+        font-size: 13px;
+        outline: none;
+    }
+
+        .price-input-inline:focus {
+            border-color: #ff6b35;
+        }
+
+    .price-save-btn,
+    .price-cancel-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        border: 1px solid #dfe2e7;
+        background: #ffffff;
+        cursor: pointer;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .price-save-btn {
+        color: #198754;
+        border-color: #bfe5cf;
+    }
+
+        .price-save-btn:hover {
+            background: #e8f7ee;
+        }
+
+    .price-cancel-btn {
+        color: #dc3545;
+        border-color: #f3c6c9;
+    }
+
+        .price-cancel-btn:hover {
+            background: #fdecec;
+        }
+
+    /* ================= DISABLE / ENABLE TOGGLE ================= */
+
+    .toggle-btn {
+        border-radius: 8px;
+        padding: 7px 13px;
+        font-size: 12px;
+        font-weight: 650;
+        cursor: pointer;
+        border: 1px solid;
+        white-space: nowrap;
+    }
+
+    .toggle-disable {
+        background: #ffffff;
+        color: #dc3545;
+        border-color: #f3c6c9;
+    }
+
+        .toggle-disable:hover {
+            background: #fdecec;
+        }
+
+    .toggle-enable {
+        background: #ffffff;
+        color: #198754;
+        border-color: #bfe5cf;
+    }
+
+        .toggle-enable:hover {
+            background: #e8f7ee;
+        }
+
+    /* ================= ACTIONS DROPDOWN ================= */
+
+    .actions-wrap {
+        position: relative;
+        display: inline-block;
+    }
+
+    .actions-btn {
+        border: 1px solid #dfe2e7;
+        background: #ffffff;
         width: 34px;
         height: 34px;
         border-radius: 8px;
-        display: flex;
+        cursor: pointer;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
-        text-decoration: none;
-        border: 1px solid #e0e2e6;
-        background: #ffffff;
-        cursor: pointer;
+        font-size: 16px;
+        color: #555b63;
     }
 
-        .small-btn:hover {
+        .actions-btn:hover {
             background: #f5f6f7;
         }
 
-    .small-btn-edit {
-        color: #2563eb;
+    .actions-menu {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: calc(100% + 6px);
+        min-width: 160px;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+        z-index: 20;
+        overflow: hidden;
     }
 
-    .small-btn-delete {
-        color: #dc3545;
-    }
+        .actions-menu.open {
+            display: block;
+        }
+
+        .actions-menu a,
+        .actions-menu button {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            width: 100%;
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #30343b;
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .actions-menu a:hover,
+            .actions-menu button:hover {
+                background: #f5f6f7;
+            }
+
+            .actions-menu button.danger {
+                color: #dc3545;
+            }
 
     /* ================= EMPTY ================= */
 
@@ -348,12 +542,16 @@
     /* ================= RESPONSIVE ================= */
 
     @@media (max-width: 1100px) {
-        .menu-grid {
+        .menu-summary {
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .menu-summary {
-            grid-template-columns: repeat(2, 1fr);
+        .menu-table-card {
+            overflow-x: auto;
+        }
+
+        .menu-table {
+            min-width: 760px;
         }
     }
 
@@ -374,10 +572,6 @@
 
         .menu-search {
             width: 100%;
-        }
-
-        .menu-grid {
-            grid-template-columns: 1fr;
         }
 
         .menu-summary {
@@ -544,6 +738,17 @@
 
         <div class="menu-filter">
 
+            <select id="categoryFilter" class="category-select">
+
+                <option value="all">All Categories</option>
+
+                @foreach (var catName in categoryNames)
+                {
+                    <option value="@catName.ToLower()">@catName</option>
+                }
+
+            </select>
+
             <button type="button"
                     class="filter-btn active"
                     data-filter="all">
@@ -574,7 +779,7 @@
 
 
     <!-- ========================================================= -->
-    <!-- MENU -->
+    <!-- MENU LIST -->
     <!-- ========================================================= -->
     @if (!Model.Any())
     {
@@ -603,130 +808,210 @@
     }
     else
     {
-        <div class="menu-grid"
-             id="menuGrid">
+        <div class="menu-table-card">
 
-            @foreach (var item in Model)
-            {
-                <div class="menu-card"
-                     data-name="@item.Name.ToLower()"
-                     data-available="@item.IsAvailable.ToString().ToLower()">
+            <table class="menu-table" id="menuTable">
 
-                    <!-- IMAGE -->
+                <thead>
 
-                    <div class="menu-image-wrapper">
+                    <tr>
+                        <th>Item</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th></th>
+                        <th style="text-align:right;">Actions</th>
+                    </tr>
 
-                        @if (!string.IsNullOrWhiteSpace(item.ImagePath))
-                        {
-                            <img src="@item.ImagePath"
-                                 class="menu-image"
-                                 alt="@item.Name" />
-                        }
-                        else
-                        {
-                            <div class="no-image">
-                                🍽️ No Image
-                            </div>
-                        }
+                </thead>
 
+                <tbody>
 
-                        <!-- AVAILABILITY -->
+                    @foreach (var item in Model)
+                    {
+                        <tr class="menu-row"
+                            data-name="@item.Name.ToLower()"
+                            data-category="@(item.Category?.Name.ToLower() ?? "")"
+                            data-available="@((item.IsAvailable && item.IsActive).ToString().ToLower())">
+
+                            <!-- ITEM (image + name + description) -->
+                            <td>
+
+                                <div class="row-item">
+
+                                    @if (!string.IsNullOrWhiteSpace(item.ImagePath))
+                                    {
+                                        <img src="@item.ImagePath"
+                                             class="row-thumb"
+                                             alt="@item.Name" />
+                                    }
+                                    else
+                                    {
+                                        <div class="row-thumb-empty">
+                                            🍽️
+                                        </div>
+                                    }
+
+                                <div>
+
+                                    <div class="row-name">
+                                        @item.Name
+                                    </div>
+
+                                    <div class="row-desc">
+                                        @(string.IsNullOrWhiteSpace(item.Description)
+                                                                            ? "No description"
+                                                                            : item.Description)
+                                </div>
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+                            <!-- CATEGORY -->
+                            <td>
+                                <span class="category-pill">
+                                    @(item.Category?.Name ?? "Uncategorized")
+                                </span>
+                            </td>
+
+                            <!-- PRICE -->
+                            <td>
+
+                                <div class="price-view"
+                                     id="priceView_@item.Id">
+
+                                    <span class="row-price">
+                                        ₹@item.Price.ToString("0.00")
+                                    </span>
+
+                                    <button type="button"
+                                            class="price-edit-btn"
+                                            onclick="showPriceEdit(@item.Id)"
+                                            title="Edit price">
+                                        ✏️
+                                    </button>
+
+                                </div>
+
+                                <form action="/Restaurant/Menu/UpdatePrice"
+                                      method="post"
+                                      id="priceForm_@item.Id"
+                                      class="price-edit-form">
+
+                                    @Html.AntiForgeryToken()
+
+                                    <input type="hidden"
+                                           name="id"
+                                           value="@item.Id" />
+
+                                    <span class="price-symbol-inline">₹</span>
+
+                                    <input type="number"
+                                           name="price"
+                                           step="0.01"
+                                           min="0.01"
+                                           value="@item.Price"
+                                           class="price-input-inline" />
+
+                                    <button type="submit"
+                                            class="price-save-btn"
+                                            title="Save">
+                                        ✔
+                                    </button>
+
+                                    <button type="button"
+                                            class="price-cancel-btn"
+                                            onclick="hidePriceEdit(@item.Id)"
+                                            title="Cancel">
+                                        ✕
+                                    </button>
+
+                                </form>
+
+                            </td>
+
+                            <!-- STATUS -->
+                            <td>
                         @if (item.IsAvailable && item.IsActive)
-                        {
-                            <span class="availability-badge available">
-                                ● Available
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="availability-badge unavailable">
-                                ● Unavailable
-                            </span>
-                        }
-
-                </div>
-
-
-                <!-- BODY -->
-
-                <div class="menu-card-body">
-
-                    <div class="menu-category">
-
-                        @(item.Category?.Name ?? "Uncategorized")
-
-                    </div>
-
-
-                    <div class="menu-item-name">
-
-                        @item.Name
-
-                    </div>
-
-
-                    <div class="menu-description">
-
-                        @(string.IsNullOrWhiteSpace(item.Description)
-                                            ? "No description available."
-                                            : item.Description)
-
-                </div>
-
-
-                        <div class="menu-bottom">
-
-                            <div class="menu-price">
-
-                                ₹@item.Price.ToString("0.00")
-
-                            </div>
-
-
-                            <div class="menu-actions-small">
-
-                                <!-- EDIT -->
-
-                                <a asp-action="Edit"
-                                   asp-route-id="@item.Id"
-                                   class="small-btn small-btn-edit"
-                                   title="Edit">
-
-                                    ✏️
-
-                                </a>
-
-
-                                <!-- DEACTIVATE -->
-                        @if (item.IsActive)
                                 {
-                                    <form asp-action="Delete"
-                                          asp-route-id="@item.Id"
+                                    <span class="status-pill status-available">
+                                        ● Available
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="status-pill status-unavailable">
+                                        ● Unavailable
+                                    </span>
+                                }
+                            </td>
+
+                            <!-- DISABLE / ENABLE TOGGLE -->
+                            <td>
+
+                                @if (item.IsActive)
+                                {
+                                    <form action="/Restaurant/Menu/Delete"
                                           method="post"
                                           style="display:inline;">
 
                                         @Html.AntiForgeryToken()
 
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
                                         <button type="submit"
-                                                class="small-btn small-btn-delete"
-                                                title="Deactivate"
-                                                onclick="return confirm('Deactivate this menu item?');">
+                                                class="toggle-btn toggle-disable"
+                                                onclick="return confirm('Disable this menu item? It will no longer be available to customers.');">
+                                            Disable
+                                        </button>
 
-                                            🗑️
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form action="/Restaurant/Menu/Activate"
+                                          method="post"
+                                          style="display:inline;">
 
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden"
+                                               name="id"
+                                               value="@item.Id" />
+
+                                        <button type="submit"
+                                                class="toggle-btn toggle-enable">
+                                            Enable
                                         </button>
 
                                     </form>
                                 }
 
-                            </div>
+                            </td>
 
-                        </div>
+                            <!-- ACTIONS -->
+                            <td style="text-align:right;">
 
-                    </div>
+                                <a href="/Restaurant/Menu/Edit/@item.Id"
+                                   class="actions-btn"
+                                   style="text-decoration:none;"
+                                   title="Edit">
+                                    ✏️
+                                </a>
 
-                </div>
-            }
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
 
         </div>
     }
@@ -735,7 +1020,7 @@
 
 
 <!-- ============================================================= -->
-<!-- SEARCH + FILTER JAVASCRIPT -->
+<!-- SEARCH + FILTER + ACTIONS JAVASCRIPT -->
 <!-- ============================================================= -->
 
 <script>
@@ -743,8 +1028,11 @@
     const searchInput =
         document.getElementById("menuSearch");
 
-    const menuCards =
-        document.querySelectorAll(".menu-card");
+    const categoryFilter =
+        document.getElementById("categoryFilter");
+
+    const menuRows =
+        document.querySelectorAll(".menu-row");
 
     const filterButtons =
         document.querySelectorAll(".filter-btn");
@@ -760,18 +1048,30 @@
                 ? searchInput.value.toLowerCase().trim()
                 : "";
 
+        const selectedCategory =
+            categoryFilter
+                ? categoryFilter.value
+                : "all";
 
-        menuCards.forEach(card => {
+
+        menuRows.forEach(row => {
 
             const name =
-                card.dataset.name || "";
+                row.dataset.name || "";
+
+            const category =
+                row.dataset.category || "";
 
             const available =
-                card.dataset.available === "true";
+                row.dataset.available === "true";
 
 
             const matchesSearch =
                 name.includes(searchText);
+
+            const matchesCategory =
+                selectedCategory === "all" ||
+                category === selectedCategory;
 
 
             let matchesFilter = true;
@@ -789,8 +1089,8 @@
             }
 
 
-            card.style.display =
-                matchesSearch && matchesFilter
+            row.style.display =
+                matchesSearch && matchesCategory && matchesFilter
                     ? ""
                     : "none";
 
@@ -803,6 +1103,16 @@
 
         searchInput.addEventListener(
             "input",
+            filterMenu
+        );
+
+    }
+
+
+    if (categoryFilter) {
+
+        categoryFilter.addEventListener(
+            "change",
             filterMenu
         );
 
@@ -833,5 +1143,72 @@
         );
 
     });
+
+
+    // =====================================================
+    // ACTIONS DROPDOWN
+    // =====================================================
+
+    function toggleActions(button) {
+
+        const menu =
+            button.nextElementSibling;
+
+        const isOpen =
+            menu.classList.contains("open");
+
+
+        document
+            .querySelectorAll(".actions-menu.open")
+            .forEach(m => m.classList.remove("open"));
+
+
+        if (!isOpen) {
+            menu.classList.add("open");
+        }
+
+    }
+
+
+    document.addEventListener("click", function (event) {
+
+        if (!event.target.closest(".actions-wrap")) {
+
+            document
+                .querySelectorAll(".actions-menu.open")
+                .forEach(m => m.classList.remove("open"));
+
+        }
+
+    });
+
+
+    // =====================================================
+    // INLINE PRICE EDIT
+    // =====================================================
+
+    function showPriceEdit(id) {
+
+        document.getElementById("priceView_" + id).style.display = "none";
+
+        const form =
+            document.getElementById("priceForm_" + id);
+
+        form.classList.add("open");
+
+        form.querySelector(".price-input-inline").focus();
+
+    }
+
+
+    function hidePriceEdit(id) {
+
+        document.getElementById("priceView_" + id).style.display = "flex";
+
+        document
+            .getElementById("priceForm_" + id)
+            .classList.remove("open");
+
+    }
 
 </script>
