@@ -853,23 +853,14 @@
                             <div class="form-row">
 
                                 <!-- PRICE -->
-
                                 <div class="form-group">
-
-                                    <label asp-for="Price"
-                                           class="form-label-custom">
-
+                                    <label asp-for="Price" class="form-label-custom">
                                         Price
                                         <span class="required">*</span>
-
                                     </label>
 
                                     <div class="price-wrapper">
-
-                                        <span class="price-symbol">
-                                            ₹
-                                        </span>
-
+                                        <span class="price-symbol">₹</span>
                                         <input type="number"
                                                id="Price"
                                                name="Price"
@@ -877,84 +868,67 @@
                                                min="0.01"
                                                class="input-custom price-input"
                                                placeholder="200.00" />
-
                                     </div>
 
-                                    <span asp-validation-for="Price"
-                                          class="validation-message">
-                                    </span>
-
+                                    <span asp-validation-for="Price" class="validation-message"></span>
                                 </div>
 
-
                                 <!-- AVAILABILITY -->
-
                                 <div class="form-group">
-
-                                    <label class="form-label-custom">
-                                        Availability
-                                    </label>
+                                    <label class="form-label-custom">Availability</label>
 
                                     <label class="availability-box">
-
                                         <div class="availability-left">
-
-                                            <div class="availability-icon">
-                                                ✓
-                                            </div>
-
+                                            <div class="availability-icon">✓</div>
                                             <div class="availability-text">
-
-                                                <strong>
-                                                    Available for ordering
-                                                </strong>
-
-                                                <span>
-                                                    Customers can order this item
-                                                </span>
-
+                                                <strong>Available for ordering</strong>
+                                                <span>Customers can order this item</span>
                                             </div>
-
                                         </div>
 
-
-
                                         <div class="switch">
-
+                                            <!-- checkbox FIRST, hidden fallback SECOND -->
+                                            <input type="checkbox"
+                                                   id="IsAvailable"
+                                                   name="IsAvailable"
+                                                   value="true"
+                                                   @(Model.IsAvailable ? "checked" : "") />
                                             <input type="checkbox" id="IsAvailable" name="IsAvailable" value="true" checked="@Model.IsAvailable" />
                                             <input type="hidden" name="IsAvailable" value="false" />
 
                                             <span class="slider"></span>
+                                        </div>
+                                    </label>
+                                </div>
 
+                            </div>
 
+                            <!-- ACTIVE (put it in its own row below, or add a second column if you prefer) -->
+                            <div class="form-row" style="margin-top:19px;">
+                                <div class="form-group">
+                                    <label class="form-label-custom">Active</label>
+
+                                    <label class="availability-box">
+                                        <div class="availability-left">
+                                            <div class="availability-icon">●</div>
+                                            <div class="availability-text">
+                                                <strong>Show in menu</strong>
+                                                <span>Turn off to hide this item</span>
+                                            </div>
                                         </div>
 
                                         <div class="switch">
-
-                                            @* <input type="checkbox"
-                                                   id="IsAvailable"
-                                                   name="IsAvailable"
-                                                   value="true"
-                                                   checked="@Model.IsAvailable" /> *@
-
-                                            <!-- AVAILABILITY -->
-                                            <!-- ACTIVE -->
-                                            <input type="hidden" name="IsActive" value="false" />
                                             <input type="checkbox"
                                                    id="IsActive"
                                                    name="IsActive"
                                                    value="true"
-                                                   checked="@Model.IsActive" />
+                                                   @(Model.IsActive ? "checked" : "") />
+                                            <input type="hidden" name="IsActive" value="false" />
 
                                             <span class="slider"></span>
-
-
                                         </div>
-
                                     </label>
-
                                 </div>
-
                             </div>
 
                         </div>
