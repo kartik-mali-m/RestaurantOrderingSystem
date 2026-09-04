@@ -1,0 +1,520 @@
+﻿@model RestaurantOrderingSystem.ViewModels.Customer.CheckoutVM
+
+@{
+    ViewData["Title"] = "Checkout";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    :root {
+        --primary: #C0392B;
+        --primary-dark: #922B21;
+        --cream: #FFF8F0;
+        --text: #2B2119;
+        --muted: #8A7B6E;
+    }
+
+    body {
+        background: var(--cream);
+    }
+
+    .checkout-page {
+        padding: 30px 0;
+    }
+
+    .checkout-title {
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 5px;
+    }
+
+    .checkout-subtitle {
+        color: var(--muted);
+        margin-bottom: 25px;
+    }
+
+    .checkout-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(0,0,0,0.06);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+    }
+
+    .checkout-card-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .form-control,
+    .form-select {
+        border-radius: 10px;
+        padding: 11px 13px;
+    }
+
+    .order-type-options {
+        display: flex;
+        gap: 15px;
+    }
+
+    .order-type-card {
+        flex: 1;
+        border: 2px solid #e5e5e5;
+        border-radius: 12px;
+        padding: 16px;
+        cursor: pointer;
+        text-align: center;
+        transition: 0.2s;
+    }
+
+        .order-type-card:hover {
+            border-color: var(--primary);
+        }
+
+        .order-type-card.active {
+            border-color: var(--primary);
+            background: #fff3f1;
+        }
+
+        .order-type-card input {
+            display: none;
+        }
+
+    .order-type-icon {
+        font-size: 30px;
+        margin-bottom: 8px;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+    .order-item-name {
+        font-weight: 600;
+        color: var(--text);
+    }
+
+    .order-item-details {
+        font-size: 13px;
+        color: var(--muted);
+    }
+
+    .original-price {
+        text-decoration: line-through;
+        color: #999;
+        font-size: 13px;
+        margin-right: 6px;
+    }
+
+    .final-price {
+        font-weight: 700;
+        color: var(--primary);
+    }
+
+    .promotion-badge {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 3px 8px;
+        background: #e8f7ee;
+        color: #198754;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: var(--text);
+    }
+
+    .total-row {
+        border-top: 1px solid #ddd;
+        padding-top: 16px;
+        margin-top: 15px;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .place-order-btn {
+        width: 100%;
+        border: none;
+        border-radius: 12px;
+        padding: 14px;
+        font-size: 16px;
+        font-weight: 700;
+        background: var(--primary);
+        color: white;
+        transition: 0.2s;
+    }
+
+        .place-order-btn:hover {
+            background: var(--primary-dark);
+        }
+
+    .table-section {
+        display: none;
+    }
+
+        .table-section.show {
+            display: block;
+        }
+
+    @@media(max-width: 768px) {
+
+        .order-type-options {
+            flex-direction: column;
+        }
+    }
+
+</style>
+
+
+<div class="container checkout-page">
+
+    <h2 class="checkout-title">
+        Checkout
+    </h2>
+
+    <p class="checkout-subtitle">
+        @Model.RestaurantName
+    </p>
+
+
+    <form method="post">
+
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+
+            <div class="col-lg-7">
+
+                <!-- CUSTOMER DETAILS -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-title">
+                        👤 Customer Details
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="CustomerName"
+                               class="form-label">
+                            Your Name
+                        </label>
+
+                        <input asp-for="CustomerName"
+                               class="form-control"
+                               placeholder="Enter your name" />
+
+                        <span asp-validation-for="CustomerName"
+                              class="text-danger"></span>
+
+                    </div>
+
+
+                    <div>
+
+                        <label asp-for="CustomerPhone"
+                               class="form-label">
+                            Phone Number
+                        </label>
+
+                        <input asp-for="CustomerPhone"
+                               class="form-control"
+                               placeholder="Enter your phone number" />
+
+                        <span asp-validation-for="CustomerPhone"
+                              class="text-danger"></span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORDER TYPE -->
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-title">
+                        🍽️ Order Type
+                    </div>
+
+
+                    <div class="order-type-options">
+
+                        <!-- DINE IN -->
+
+                        <label class="order-type-card"
+                               id="dineInCard">
+
+                            <input asp-for="OrderType"
+                                   type="radio"
+                                   value="DineIn"
+                                   id="dineInRadio" />
+
+                            <div class="order-type-icon">
+                                🍽️
+                            </div>
+
+                            <strong>Dine-In</strong>
+
+                            <div class="small text-muted">
+                                Eat at the restaurant
+                            </div>
+
+                        </label>
+
+
+                        <!-- PARCEL -->
+
+                        <label class="order-type-card"
+                               id="parcelCard">
+
+                            <input asp-for="OrderType"
+                                   type="radio"
+                                   value="Parcel"
+                                   id="parcelRadio" />
+
+                            <div class="order-type-icon">
+                                📦
+                            </div>
+
+                            <strong>Parcel</strong>
+
+                            <div class="small text-muted">
+                                Take your food with you
+                            </div>
+
+                        </label>
+
+                    </div>
+
+                    <span asp-validation-for="OrderType"
+                          class="text-danger"></span>
+
+                </div>
+
+
+                <!-- TABLE SELECTION -->
+
+                <div class="checkout-card table-section"
+                     id="tableSection">
+
+                    <div class="checkout-card-title">
+                        🪑 Select Table
+                    </div>
+
+
+                    @if (Model.AvailableTables.Any())
+                    {
+                        <select asp-for="TableId"
+                                class="form-select">
+
+                            <option value="">
+                                Select a table
+                            </option>
+
+                            @foreach (var table in Model.AvailableTables)
+                            {
+                                <option value="@table.TableId">
+                                    Table @table.TableNumber
+                                </option>
+                            }
+
+                        </select>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning mb-0">
+                            No tables are currently available.
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE -->
+
+            <div class="col-lg-5">
+
+                <div class="checkout-card">
+
+                    <div class="checkout-card-title">
+                        🛒 Order Summary
+                    </div>
+
+
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="order-item">
+
+                            <div>
+
+                                <div class="order-item-name">
+                                    @item.Name
+                                </div>
+
+                                <div class="order-item-details">
+                                    Quantity: @item.Quantity
+                                </div>
+
+
+                                @if (item.HasPromotion)
+                                {
+                                    <div class="promotion-badge">
+
+                                        🎁 @item.PromotionName
+                                        (@item.DiscountPercentage% OFF)
+
+                                    </div>
+                                }
+
+                            </div>
+
+
+                            <div class="text-end">
+
+                                @if (item.HasPromotion)
+                                {
+                                    <span class="original-price">
+                                        ₹@item.OriginalPrice.ToString("0.00")
+                                    </span>
+                                }
+
+                                <div class="final-price">
+
+                                    ₹@item.TotalPrice.ToString("0.00")
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    }
+
+
+                    <div class="summary-row mt-4">
+
+                        <span>Total Items</span>
+
+                        <strong>
+                            @Model.Items.Sum(x => x.Quantity)
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row total-row">
+
+                        <span>Total Amount</span>
+
+                        <span>
+                            ₹@Model.TotalAmount.ToString("0.00")
+                        </span>
+
+                    </div>
+
+
+                    <button type="submit"
+                            class="place-order-btn">
+
+                        Place Order →
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const dineInRadio =
+            document.getElementById("dineInRadio");
+
+        const parcelRadio =
+            document.getElementById("parcelRadio");
+
+        const tableSection =
+            document.getElementById("tableSection");
+
+        const dineInCard =
+            document.getElementById("dineInCard");
+
+        const parcelCard =
+            document.getElementById("parcelCard");
+
+
+        function updateOrderType() {
+
+            if (dineInRadio.checked) {
+
+                tableSection.classList.add("show");
+
+                dineInCard.classList.add("active");
+
+                parcelCard.classList.remove("active");
+
+            }
+            else if (parcelRadio.checked) {
+
+                tableSection.classList.remove("show");
+
+                parcelCard.classList.add("active");
+
+                dineInCard.classList.remove("active");
+
+            }
+
+        }
+
+
+        dineInRadio.addEventListener(
+            "change",
+            updateOrderType
+        );
+
+
+        parcelRadio.addEventListener(
+            "change",
+            updateOrderType
+        );
+
+
+        updateOrderType();
+
+    </script>
+
+}

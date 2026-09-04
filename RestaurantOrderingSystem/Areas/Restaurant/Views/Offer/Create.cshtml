@@ -1,0 +1,312 @@
+﻿@model RestaurantOrderingSystem.ViewModels.Offer.OfferVM
+
+@{
+    ViewData["Title"] = "Create Offer";
+    Layout = "~/Areas/Restaurant/Views/Shared/_LayoutResto.cshtml";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h3 class="mb-4">
+                        Create New Offer
+                    </h3>
+
+                    <form asp-action="Create"
+                          method="post">
+
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3">
+                        </div>
+
+                        <!-- OFFER NAME -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="Name"
+                                   class="form-label">
+                                Offer Name
+                            </label>
+
+                            <input asp-for="Name"
+                                   class="form-control"
+                                   placeholder="Example: Weekend Special" />
+
+                            <span asp-validation-for="Name"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="Description"
+                                   class="form-label">
+                                Description
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Enter offer description">
+                            </textarea>
+
+                        </div>
+
+
+                        <!-- TARGET TYPE -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="TargetType"
+                                   class="form-label">
+                                Apply Offer To
+                            </label>
+
+                            <select asp-for="TargetType"
+                                    id="targetType"
+                                    class="form-select">
+
+                                <option value="1">
+                                    Entire Restaurant
+                                </option>
+
+                                <option value="2">
+                                    Category
+                                </option>
+
+                                <option value="3">
+                                    Menu Item
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- CATEGORY -->
+
+                        <div class="mb-3"
+                             id="categoryContainer"
+                             style="display:none;">
+
+                            <label asp-for="CategoryId"
+                                   class="form-label">
+                                Select Category
+                            </label>
+
+                            <select asp-for="CategoryId"
+                                    asp-items="ViewBag.Categories"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Category --
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- MENU ITEM -->
+
+                        <div class="mb-3"
+                             id="menuItemContainer"
+                             style="display:none;">
+
+                            <label asp-for="MenuItemId"
+                                   class="form-label">
+                                Select Menu Item
+                            </label>
+
+                            <select asp-for="MenuItemId"
+                                    asp-items="ViewBag.MenuItems"
+                                    class="form-select">
+
+                                <option value="">
+                                    -- Select Menu Item --
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- DISCOUNT -->
+
+                        <div class="mb-3">
+
+                            <label asp-for="DiscountPercentage"
+                                   class="form-label">
+                                Discount Percentage
+                            </label>
+
+                            <input asp-for="DiscountPercentage"
+                                   type="number"
+                                   step="0.01"
+                                   min="0.01"
+                                   max="100"
+                                   class="form-control"
+                                   placeholder="Example: 20" />
+
+                            <span asp-validation-for="DiscountPercentage"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+
+                        <div class="row">
+
+                            <!-- START DATE -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label asp-for="StartDate"
+                                       class="form-label">
+                                    Start Date
+                                </label>
+
+                                <input asp-for="StartDate"
+                                       type="datetime-local"
+                                       class="form-control" />
+
+                                <span asp-validation-for="StartDate"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+
+                            <!-- END DATE -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <label asp-for="EndDate"
+                                       class="form-label">
+                                    End Date
+                                </label>
+
+                                <input asp-for="EndDate"
+                                       type="datetime-local"
+                                       class="form-control" />
+
+                                <span asp-validation-for="EndDate"
+                                      class="text-danger">
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        
+                        <!-- ACTIVE -->
+
+                        <div class="form-check mb-4">
+
+                            <input asp-for="IsActive"
+                                   type="checkbox"
+                                   class="form-check-input"
+                                   style="width:18px; height:18px;" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label ms-2">
+                                Active
+                            </label>
+
+                        </div>
+
+
+                        <!-- BUTTONS -->
+
+                        <div class="d-flex gap-2">
+
+                            <button type="submit"
+                                    class="btn btn-success">
+                                Create Offer
+                            </button>
+
+                            <a asp-action="Index"
+                               class="btn btn-secondary">
+                                Cancel
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            const targetType =
+                document.getElementById("targetType");
+
+            const categoryContainer =
+                document.getElementById("categoryContainer");
+
+            const menuItemContainer =
+                document.getElementById("menuItemContainer");
+
+
+            function updateTargetFields() {
+
+                const value =
+                    targetType.value;
+
+                categoryContainer.style.display = "none";
+
+                menuItemContainer.style.display = "none";
+
+
+                if (value === "2") {
+
+                    categoryContainer.style.display = "block";
+                }
+
+                if (value === "3") {
+
+                    menuItemContainer.style.display = "block";
+                }
+            }
+
+
+            targetType.addEventListener(
+                "change",
+                updateTargetFields);
+
+
+            updateTargetFields();
+
+        });
+
+    </script>
+}
