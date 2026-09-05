@@ -10,13 +10,16 @@ namespace RestaurantOrderingSystem.Controllers
     {
         private readonly ICartService _cartService;
         private readonly ApplicationDbContext _context;
+        private readonly IOrderService _orderService;
 
         public CheckoutController(
             ICartService cartService,
-            ApplicationDbContext context)
+            ApplicationDbContext context,
+            IOrderService orderService)
         {
             _cartService = cartService;
             _context = context;
+            _orderService = orderService;
         }
 
 
@@ -66,40 +69,33 @@ namespace RestaurantOrderingSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(CheckoutVM model)
+        public async Task<IActionResult> Index(
+    CheckoutVM model,
+    string paymentOption)
         {
-            // Get current cart from session
             var cart = _cartService.GetCart();
 
-
-            // ==========================================
-            // PREVENT EMPTY CART
-            // ==========================================
-
+            // Prevent empty cart
             if (cart.Items == null || !cart.Items.Any())
             {
-                return RedirectToAction(
-                    "Index",
-                    "Cart");
+                return RedirectToAction("Index", "Cart");
             }
 
-
-            // ==========================================
-            // RESTORE CART DATA
-            // Never trust Items from browser
-            // ==========================================
-
+            // Restore cart data from session
             model.RestaurantId = cart.RestaurantId;
-
             model.RestaurantName = cart.RestaurantName;
-
             model.Items = cart.Items;
 
+            // Validate payment option
+            if (paymentOption != "PayNow" &&
+                paymentOption != "PayLater")
+            {
+                ModelState.AddModelError(
+                    "",
+                    "Please select a payment option.");
+            }
 
-            // ==========================================
-            // VALIDATE ORDER TYPE
-            // ==========================================
-
+            // Validate order type
             if (model.OrderType != "DineIn" &&
                 model.OrderType != "Parcel")
             {
@@ -108,11 +104,7 @@ namespace RestaurantOrderingSystem.Controllers
                     "Please select Dine-In or Parcel.");
             }
 
-
-            // ==========================================
-            // VALIDATE TABLE FOR DINE-IN
-            // ==========================================
-
+            // Validate table for Dine-In
             if (model.OrderType == "DineIn")
             {
                 if (!model.TableId.HasValue)
@@ -123,8 +115,6 @@ namespace RestaurantOrderingSystem.Controllers
                 }
                 else
                 {
-                    // Check table belongs to restaurant
-                    // and is currently available
                     var tableExists = await _context.RestaurantTables
                         .AnyAsync(t =>
                             t.Id == model.TableId.Value &&
@@ -140,35 +130,51 @@ namespace RestaurantOrderingSystem.Controllers
                 }
             }
 
-
-            // ==========================================
-            // VALIDATION FAILED
-            // ==========================================
-
+            // Validation failed
             if (!ModelState.IsValid)
             {
                 model.AvailableTables =
-                    await GetAvailableTablesAsync(
-                        cart.RestaurantId);
+                    await GetAvailableTablesAsync(cart.RestaurantId);
 
                 return View(model);
             }
 
+            // Create order
+            var order = await _orderService.CreateOrderAsync(
+                cart.RestaurantId,
+                model.CustomerName,
+                model.CustomerPhone,
+                model.OrderType,
+                model.TableId,
+                cart);
 
-            // ==========================================
-            // PHASE 12 COMPLETE CHECK
-            // ==========================================
+            // Clear cart
+            _cartService.ClearCart();
 
-            // We are NOT creating the final order here.
-            // Payment = Phase 13
-            // Final Order Creation = Phase 14
+            // PAY NOW
+            if (paymentOption == "PayNow")
+            {
+                return RedirectToAction(
+                    "Index",
+                    "Payment",
+                    new { orderId = order.Id });
+            }
 
-            TempData["SuccessMessage"] =
-                "Checkout details validated successfully!";
+            // PAY LATER
+            return RedirectToAction(
+                "Confirmation",
+                "Order",
+                new { id = order.Id });
+        
 
+        ModelState.AddModelError(
+                "",
+                "Please select a payment option.");
 
-            // For now redirect back to Checkout
-            return RedirectToAction(nameof(Index));
+            model.AvailableTables =
+                await GetAvailableTablesAsync(cart.RestaurantId);
+
+            return View(model);
         }
 
 

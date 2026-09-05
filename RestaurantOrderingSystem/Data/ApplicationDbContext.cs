@@ -2,6 +2,8 @@
 using RestaurantOrderingSystem.Models.Identity;
 using RestaurantOrderingSystem.Models.Menu;
 using RestaurantOrderingSystem.Models.Offer;
+using RestaurantOrderingSystem.Models.Order;
+using RestaurantOrderingSystem.Models.Payment;
 using RestaurantOrderingSystem.Models.QRCode;
 using RestaurantOrderingSystem.Models.Restaurant;
 
@@ -33,11 +35,14 @@ namespace RestaurantOrderingSystem.Data
 
         public DbSet<Discount> Discounts { get; set; }
 
+        public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // IMPORTANT
             modelBuilder.ApplyConfigurationsFromAssembly(
                 typeof(ApplicationDbContext).Assembly);
 
@@ -62,14 +67,8 @@ namespace RestaurantOrderingSystem.Data
                 .IsUnique();
 
             modelBuilder.ApplyConfigurationsFromAssembly(
-    typeof(ApplicationDbContext).Assembly);
+     typeof(ApplicationDbContext).Assembly);
 
-            modelBuilder.Entity<RestaurantTable>()
-    .HasOne(t => t.Restaurant)
-    .WithMany()
-    .HasForeignKey(t => t.RestaurantId)
-    .OnDelete(DeleteBehavior.Cascade);
         }
-
     }
 }

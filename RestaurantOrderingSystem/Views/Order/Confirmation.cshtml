@@ -1,0 +1,119 @@
+﻿@model RestaurantOrderingSystem.ViewModels.Customer.OrderConfirmationVM
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container py-5">
+
+    <div class="text-center mb-4">
+        <h1>🎉 Order Placed Successfully!</h1>
+        <p class="text-muted">
+            Thank you for your order.
+        </p>
+    </div>
+
+    <div class="card shadow-sm mx-auto" style="max-width: 700px;">
+
+        <div class="card-body">
+
+            <div class="text-center mb-4">
+                <h3>Order ID: #@Model.OrderId</h3>
+
+                <span class="badge bg-warning text-dark">
+                    @Model.Status
+                </span>
+            </div>
+
+            <hr />
+
+            <h5>Order Details</h5>
+
+            <p>
+                <strong>Restaurant:</strong>
+                @Model.RestaurantName
+            </p>
+
+            <p>
+                <strong>Customer:</strong>
+                @Model.CustomerName
+            </p>
+
+            <p>
+                <strong>Phone:</strong>
+                @Model.CustomerPhone
+            </p>
+
+            <p>
+                <strong>Order Type:</strong>
+                @Model.OrderType
+            </p>
+
+            @if (Model.OrderType == "DineIn" &&
+                        !string.IsNullOrEmpty(Model.TableNumber))
+            {
+                <p>
+                    <strong>Table:</strong>
+                    @Model.TableNumber
+                </p>
+            }
+
+            <hr />
+
+            <h5>Items</h5>
+
+            @foreach (var item in Model.Items)
+            {
+                <div class="d-flex justify-content-between mb-2">
+
+                    <div>
+                        <strong>@item.ItemName</strong>
+                        <br />
+                        <small class="text-muted">
+                            ₹@item.Price × @item.Quantity
+                        </small>
+                    </div>
+
+                    <div>
+                        ₹@item.TotalPrice
+                    </div>
+
+                </div>
+            }
+
+            <hr />
+
+            <div class="d-flex justify-content-between">
+                <span>Subtotal</span>
+                <strong>₹@Model.SubTotal</strong>
+            </div>
+
+            @if (Model.DiscountAmount > 0)
+            {
+                <div class="d-flex justify-content-between">
+                    <span>Discount</span>
+                    <strong>- ₹@Model.DiscountAmount</strong>
+                </div>
+            }
+
+            <div class="d-flex justify-content-between mt-3">
+                <h4>Total</h4>
+                <h4>₹@Model.TotalAmount</h4>
+            </div>
+
+            <div class="text-center mt-4">
+
+                <a asp-controller="Payment"
+                   asp-action="Index"
+                   asp-route-orderId="@Model.OrderId"
+                   class="btn btn-primary">
+                    Continue to Payment
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
